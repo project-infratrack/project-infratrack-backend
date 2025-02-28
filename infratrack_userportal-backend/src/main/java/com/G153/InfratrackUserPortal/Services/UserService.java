@@ -3,7 +3,6 @@ package com.G153.InfratrackUserPortal.Services;
 import com.G153.InfratrackUserPortal.DTO.UserRegistrationRequest;
 import com.G153.InfratrackUserPortal.Entities.User;
 import com.G153.InfratrackUserPortal.Repositories.UserRepository;
-import jakarta.transaction.Transactional;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -12,7 +11,6 @@ import org.springframework.stereotype.Service;
 import java.util.Optional;
 
 @Service
-@Transactional
 public class UserService {
     private final UserRepository userRepository;
     private final PasswordEncoder passwordEncoder;
