@@ -17,7 +17,9 @@ public class ProblemReportService {
         problemReport.setReportType(dto.getReportType());
         problemReport.setDescription(dto.getDescription());
         problemReport.setLocation(dto.getLocation());
-        problemReport.setImage(dto.getImage()); // Set image data
+        problemReport.setImage(dto.getImage());// Set image data
+        problemReport.setLatitude(dto.getLatitude());
+        problemReport.setLongitude(dto.getLongitude());
         problemReport.setStatus("Pending"); // Default status
 
         return problemReportRepository.save(problemReport);
