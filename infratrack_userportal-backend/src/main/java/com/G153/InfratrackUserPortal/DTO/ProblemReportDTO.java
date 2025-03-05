@@ -5,6 +5,8 @@ public class ProblemReportDTO {
     private String description;
     private String location;
     private byte[] image; // Change to byte array
+    private double latitude;
+    private double longitude;
 
     // Getters
     public String getReportType() {
@@ -23,6 +25,15 @@ public class ProblemReportDTO {
         return image;
     }
 
+    public double getLatitude(){
+        return latitude;
+    }
+
+    public double getLongitude(){
+        return longitude;
+    }
+
+
     // Setters
     public void setReportType(String reportType) {
         this.reportType = reportType;
@@ -38,5 +49,13 @@ public class ProblemReportDTO {
 
     public void setImage(byte[] image) {
         this.image = image;
+    }
+
+    public void setLongitude(double longitude) {
+        this.longitude = longitude;
+    }
+
+    public void setLatitude(double latitude) {
+        this.latitude = latitude;
     }
 }
