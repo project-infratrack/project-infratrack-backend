@@ -4,6 +4,8 @@ import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
 import org.springframework.data.mongodb.core.mapping.Field;
 
+import java.time.LocalDateTime;
+
 @Document(collection = "users")
 public class User {
     @Id
@@ -29,6 +31,12 @@ public class User {
 
     @Field("mobileNumber")
     private String mobileNumber;
+
+    @Field("otp")
+    private String otp;
+
+    @Field("otpExpirationTime")
+    private LocalDateTime otpExpirationTime;
 
     public String getEmail() {
         return email;
@@ -94,6 +102,21 @@ public class User {
         this.username = username;
     }
     public User() {}
+
+    public String getOtp() {
+        return otp;
+    }
+
+    public void setOtp(String otp) {
+        this.otp = otp;
+    }
+
+    public LocalDateTime getOtpExpirationTime() {
+        return otpExpirationTime;
+    }
+    public void setOtpExpirationTime(LocalDateTime otpExpirationTime) {
+        this.otpExpirationTime = otpExpirationTime;
+    }
 
     public User(String email, String firstName, String id, String idNumber, String lastName, String mobileNumber, String password, String username) {
         this.email = email;

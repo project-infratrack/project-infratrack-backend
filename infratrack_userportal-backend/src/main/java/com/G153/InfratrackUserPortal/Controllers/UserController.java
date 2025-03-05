@@ -1,7 +1,6 @@
 package com.G153.InfratrackUserPortal.Controllers;
 
-import com.G153.InfratrackUserPortal.DTO.UserLoginRequest;
-import com.G153.InfratrackUserPortal.DTO.UserRegistrationRequest;
+import com.G153.InfratrackUserPortal.DTO.*;
 import com.G153.InfratrackUserPortal.Entities.User;
 import com.G153.InfratrackUserPortal.Services.UserService;
 import jakarta.validation.Valid;
@@ -49,6 +48,24 @@ public class UserController {
     @PostMapping("/login")
     public ResponseEntity<?> loginUser(@RequestBody UserLoginRequest loginRequest) {
         return userService.loginUser(loginRequest.getIdNumber(), loginRequest.getPassword());
+    }
+    @PostMapping("/forget-password")
+    public ResponseEntity<?> forgetPassword(@Valid @RequestBody ForgetPasswordRequest request) {
+        return userService.initiateForgetPassword(request.getIdNumber());
+    }
+
+    @PostMapping("/verify-otp")
+    public ResponseEntity<?> verifyOtp(@Valid @RequestBody OtpVerificationRequest request) {
+        return userService.verifyOtp(request.getIdNumber(), request.getOtp());
+    }
+
+    @PostMapping("/reset-password")
+    public ResponseEntity<?> resetPassword(@Valid @RequestBody ResetPasswordRequest request) {
+        return userService.resetPassword(
+                request.getIdNumber(),
+                request.getNewPassword(),
+                request.getConfirmPassword()
+        );
     }
 }
 
