@@ -1,8 +1,10 @@
 package com.G153.InfratrackUserPortal.Services;
 
+import com.G153.InfratrackUserPortal.DTO.JwtAuthResponse;
 import com.G153.InfratrackUserPortal.DTO.UserRegistrationRequest;
 import com.G153.InfratrackUserPortal.Entities.User;
 import com.G153.InfratrackUserPortal.Repositories.UserRepository;
+import com.G153.InfratrackUserPortal.security.JwtTokenProvider;
 import jakarta.transaction.Transactional;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -20,13 +22,17 @@ import java.util.Random;
 public class UserService {
     private final UserRepository userRepository;
     private final PasswordEncoder passwordEncoder;
-    private final JavaMailSender mailSender; // You'll need to add this dependency
+    private final JwtTokenProvider jwtTokenProvider;
+    private final JavaMailSender mailSender;
 
-
-    public UserService(UserRepository userRepository, PasswordEncoder passwordEncoder, JavaMailSender mailSender) {
+    public UserService(UserRepository userRepository,
+                       PasswordEncoder passwordEncoder,
+                       JwtTokenProvider jwtTokenProvider,
+                       JavaMailSender mailSender) {
         this.userRepository = userRepository;
         this.passwordEncoder = passwordEncoder;
-        this. mailSender=  mailSender;
+        this.jwtTokenProvider = jwtTokenProvider;
+        this.mailSender = mailSender;
     }
 
     public User registerUser(UserRegistrationRequest request) {
@@ -53,15 +59,26 @@ public class UserService {
 
         return userRepository.save(user);
     }
+
     public ResponseEntity<?> loginUser(String idNumber, String password) {
-        Optional<User> user = userRepository.findByIdNumber(idNumber);
-        if (user.isPresent() && passwordEncoder.matches(password, user.get().getPassword())) {
-            // Successfully authenticated
-            return ResponseEntity.ok("User authenticated successfully");
+        Optional<User> userOptional = userRepository.findByIdNumber(idNumber);
+
+        if (userOptional.isEmpty()) {
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED)
+                    .body("Invalid ID number or password");
         }
-        // Authentication failed
-        return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Invalid ID number or password");
+
+        User user = userOptional.get();
+        if (passwordEncoder.matches(password, user.getPassword())) {
+            // Generate JWT token
+            String token = jwtTokenProvider.generateToken(user.getIdNumber());
+            return ResponseEntity.ok(new JwtAuthResponse(token));
+        }
+
+        return ResponseEntity.status(HttpStatus.UNAUTHORIZED)
+                .body("Invalid ID number or password");
     }
+
     public ResponseEntity<?> initiateForgetPassword(String idNumber) {
         Optional<User> userOptional = userRepository.findByIdNumber(idNumber);
 
@@ -70,15 +87,16 @@ public class UserService {
         }
 
         User user = userOptional.get();
-        String otp = generateOTP(); // Method to generate 6-digit OTP
+        String otp = generateOTP();
 
-        user.setOtp(passwordEncoder.encode(otp)); // Encode OTP for security
-        user.setOtpExpirationTime(LocalDateTime.now().plusMinutes(15)); // OTP valid for 15 minutes
+        user.setOtp(passwordEncoder.encode(otp));
+        user.setOtpExpirationTime(LocalDateTime.now().plusMinutes(15));
         userRepository.save(user);
 
+        // Send OTP via email
         sendOtpEmail(user.getEmail(), otp);
 
-        return ResponseEntity.ok("OTP sent to registered email");
+        return ResponseEntity.ok("OTP has been sent to your registered email");
     }
 
     public ResponseEntity<?> verifyOtp(String idNumber, String otp) {
@@ -98,7 +116,9 @@ public class UserService {
             return ResponseEntity.badRequest().body("Invalid OTP");
         }
 
-        return ResponseEntity.ok("OTP verified successfully");
+        // Generate token after OTP verification
+        String token = jwtTokenProvider.generateToken(user.getIdNumber());
+        return ResponseEntity.ok(new JwtAuthResponse(token));
     }
 
     public ResponseEntity<?> resetPassword(String idNumber, String newPassword, String confirmPassword) {
@@ -118,7 +138,8 @@ public class UserService {
         user.setOtpExpirationTime(null);
         userRepository.save(user);
 
-        return ResponseEntity.ok("Password reset successfully");
+        String token = jwtTokenProvider.generateToken(user.getIdNumber());
+        return ResponseEntity.ok(new JwtAuthResponse(token));
     }
 
     private String generateOTP() {
@@ -127,10 +148,18 @@ public class UserService {
 
     private void sendOtpEmail(String to, String otp) {
         SimpleMailMessage message = new SimpleMailMessage();
-        message.setFrom("your-email@example.com");
+        message.setFrom("infratrackiit@gmail.com");
         message.setTo(to);
-        message.setSubject("Password Reset OTP");
-        message.setText("Your OTP for password reset is: " + otp + "\nThis OTP is valid for 15 minutes.");
+        message.setSubject("Infratrack - Password Reset OTP");
+        message.setText("Your OTP for password reset is: " + otp + "\n\n" +
+                "This OTP is valid for 15 minutes.\n\n" +
+                "If you did not request this password reset, please ignore this email.\n\n" +
+                "Best regards,\n" +
+                "Infratrack Team");
         mailSender.send(message);
+    }
+
+    public Optional<User> getUserByIdNumber(String idNumber) {
+        return userRepository.findByIdNumber(idNumber);
     }
 }
