@@ -1,29 +1,14 @@
-package com.G153.InfratrackUserPortal.Entities;
+package com.G153.InfratrackUserPortal.DTO;
 
-import org.springframework.data.annotation.Id;
-import org.springframework.data.mongodb.core.mapping.Document;
-
-@Document(collection = "reports")
-public class ProblemReport {
-    @Id
-    private String id;
+public class UserReportDetails {
     private String reportType;
     private String description;
     private String location;
     private byte[] image;
-    private String status;
     private double latitude;
     private double longitude;
 
-    // Getters and Setters
-    public String getId() {
-        return id;
-    }
-
-    public void setId(String id) {
-        this.id = id;
-    }
-
+    // Getters and setters
     public String getReportType() {
         return reportType;
     }
@@ -54,14 +39,6 @@ public class ProblemReport {
 
     public void setImage(byte[] image) {
         this.image = image;
-    }
-
-    public String getStatus() {
-        return status;
-    }
-
-    public void setStatus(String status) {
-        this.status = status;
     }
 
     public double getLatitude() {
