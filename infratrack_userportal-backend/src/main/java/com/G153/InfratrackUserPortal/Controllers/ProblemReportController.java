@@ -10,7 +10,7 @@ import org.springframework.web.bind.annotation.*;
 import jakarta.validation.Valid;
 
 @RestController
-@RequestMapping("/api/reports")
+@RequestMapping("/api/users/reports")
 public class ProblemReportController {
 
     @Autowired
