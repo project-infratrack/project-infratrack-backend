@@ -7,6 +7,7 @@ import org.springframework.data.mongodb.core.mapping.Document;
 public class ProblemReport {
     @Id
     private String id;
+    private String userId;
     private String reportType;
     private String description;
     private String location;
@@ -78,5 +79,12 @@ public class ProblemReport {
 
     public void setLongitude(double longitude) {
         this.longitude = longitude;
+    }
+
+    public String getUserId() {
+        return userId;
+    }
+    public void setUserId(String userId) {
+        this.userId = userId;
     }
 }

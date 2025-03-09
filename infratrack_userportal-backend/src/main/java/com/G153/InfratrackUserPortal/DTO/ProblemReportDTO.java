@@ -1,6 +1,7 @@
 package com.G153.InfratrackUserPortal.DTO;
 
 public class ProblemReportDTO {
+    private String userId;
     private String reportType;
     private String description;
     private String location;
@@ -33,6 +34,10 @@ public class ProblemReportDTO {
         return longitude;
     }
 
+    public String getUserId() {
+        return userId;
+    }
+
 
     // Setters
     public void setReportType(String reportType) {
@@ -57,5 +62,9 @@ public class ProblemReportDTO {
 
     public void setLatitude(double latitude) {
         this.latitude = latitude;
+    }
+
+    public void setUserId(String userId) {
+        this.userId = userId;
     }
 }

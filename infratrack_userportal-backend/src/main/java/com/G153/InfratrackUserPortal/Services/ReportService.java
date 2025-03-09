@@ -1,11 +1,16 @@
 package com.G153.InfratrackUserPortal.Services;
 
+import com.G153.InfratrackUserPortal.DTO.ProblemReportDTO;
 import com.G153.InfratrackUserPortal.DTO.UserReportDetails;
 import com.G153.InfratrackUserPortal.Entities.ProblemReport;
 import com.G153.InfratrackUserPortal.Repositories.ProblemReportRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Service;
 
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -17,6 +22,37 @@ public class ReportService {
     public ReportService(ProblemReportRepository reportRepository) {
         this.reportRepository = reportRepository;
     }
+
+
+    public ProblemReport saveProblemReport(ProblemReportDTO dto) {
+        String userNIC = getUserNIC();
+        ProblemReport problemReport = new ProblemReport();
+        problemReport.setId(generateReportId());
+        problemReport.setReportType(dto.getReportType());
+        problemReport.setDescription(dto.getDescription());
+        problemReport.setLocation(dto.getLocation());
+        problemReport.setImage(dto.getImage());
+        problemReport.setLatitude(dto.getLatitude());
+        problemReport.setLongitude(dto.getLongitude());
+        problemReport.setStatus("Pending");
+        problemReport.setUserId(userNIC);
+
+        return reportRepository.save(problemReport);
+    }
+
+    private String generateReportId() {
+        SimpleDateFormat dateFormat = new SimpleDateFormat("yyMMdd");
+        String datePart = dateFormat.format(new Date());
+
+        List<ProblemReport> reports = reportRepository.findAll();
+        long count = reports.stream()
+                .filter(report -> report.getId().startsWith(datePart))
+                .count();
+
+        String reportNumber = String.format("%02d", count + 1);
+        return datePart + reportNumber;
+    }
+
 
     public List<UserReportDetails> getAllReports() {
         List<ProblemReport> reports = reportRepository.findAll();
@@ -30,5 +66,18 @@ public class ReportService {
             dto.setLongitude(report.getLongitude());
             return dto;
         }).collect(Collectors.toList());
+    }
+
+    public List<ProblemReport> getReportsByUserNIC(String userNIC) {
+        return reportRepository.findByUserId(userNIC);
+    }
+
+    public String getUserNIC(){
+        Object principal = SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        if (principal instanceof UserDetails) {
+            return ((UserDetails)principal).getUsername();
+        } else {
+            return principal.toString();
+        }
     }
 }
