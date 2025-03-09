@@ -36,7 +36,7 @@ public class SecurityConfig {
                 .authorizeHttpRequests(auth -> auth
                         .requestMatchers("/api/users/register", "/api/users/login",
                                 "/api/users/forget-password", "/api/users/verify-otp",
-                                "/api/users/reset-password").permitAll()
+                                "/api/users/reset-password", "/api/admin/login", "/api/admin/register").permitAll()
                         .anyRequest().authenticated())
                 .addFilterBefore(jwtAuthenticationFilter(),
                         UsernamePasswordAuthenticationFilter.class);
