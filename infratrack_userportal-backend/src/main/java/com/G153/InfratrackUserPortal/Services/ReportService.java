@@ -12,6 +12,7 @@ import org.springframework.stereotype.Service;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Service
@@ -58,6 +59,7 @@ public class ReportService {
         List<ProblemReport> reports = reportRepository.findAll();
         return reports.stream().map(report -> {
             UserReportDetails dto = new UserReportDetails();
+            dto.setUserId(report.getUserId());
             dto.setReportType(report.getReportType());
             dto.setDescription(report.getDescription());
             dto.setLocation(report.getLocation());
@@ -78,6 +80,17 @@ public class ReportService {
             return ((UserDetails)principal).getUsername();
         } else {
             return principal.toString();
+        }
+    }
+
+    public ProblemReport updateReportStatus(String reportId, String status) {
+        Optional<ProblemReport> reportOptional = reportRepository.findById(reportId);
+        if (reportOptional.isPresent()) {
+            ProblemReport report = reportOptional.get();
+            report.setStatus(status);
+            return reportRepository.save(report);
+        } else {
+            throw new RuntimeException("Report not found with id: " + reportId);
         }
     }
 }
