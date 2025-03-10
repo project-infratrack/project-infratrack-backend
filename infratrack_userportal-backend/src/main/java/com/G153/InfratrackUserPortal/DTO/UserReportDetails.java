@@ -1,6 +1,7 @@
 package com.G153.InfratrackUserPortal.DTO;
 
 public class UserReportDetails {
+    private String userId;
     private String reportType;
     private String description;
     private String location;
@@ -9,6 +10,12 @@ public class UserReportDetails {
     private double longitude;
 
     // Getters and setters
+    public String getUserId() {
+        return userId;
+    }
+    public void setUserId(String userId) {
+        this.userId = userId;
+    }
     public String getReportType() {
         return reportType;
     }

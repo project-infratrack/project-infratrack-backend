@@ -34,9 +34,9 @@ public class SecurityConfig {
                             response.getWriter().write("Token expired or invalid");
                         }))
                 .authorizeHttpRequests(auth -> auth
-                        .requestMatchers("/api/users/register", "/api/users/login",
-                                "/api/users/forget-password", "/api/users/verify-otp",
-                                "/api/users/reset-password", "/api/admin/login", "/api/admin/register").permitAll()
+                            .requestMatchers("/api/users/register", "/api/users/login",
+                                    "/api/users/forget-password", "/api/users/verify-otp",
+                                    "/api/users/reset-password", "/api/admin/login", "/api/admin/register").permitAll()
                         .anyRequest().authenticated())
                 .addFilterBefore(jwtAuthenticationFilter(),
                         UsernamePasswordAuthenticationFilter.class);
