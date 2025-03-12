@@ -5,9 +5,13 @@ import com.G153.InfratrackUserPortal.DTO.UserReportDetails;
 import com.G153.InfratrackUserPortal.Entities.ProblemReport;
 import com.G153.InfratrackUserPortal.Repositories.ProblemReportRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Service;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 
 import java.text.SimpleDateFormat;
 import java.util.Date;
@@ -37,6 +41,7 @@ public class ReportService {
         problemReport.setLongitude(dto.getLongitude());
         problemReport.setStatus("Pending");
         problemReport.setUserId(userNIC);
+        problemReport.setPriorityLevel(dto.getPriorityLevel()); // Set priority level
 
         return reportRepository.save(problemReport);
     }
@@ -88,6 +93,16 @@ public class ReportService {
         if (reportOptional.isPresent()) {
             ProblemReport report = reportOptional.get();
             report.setStatus(status);
+            return reportRepository.save(report);
+        } else {
+            throw new RuntimeException("Report not found with id: " + reportId);
+        }
+    }
+    public ProblemReport updateReportPriorityLevel(String reportId, String priorityLevel) {
+        Optional<ProblemReport> reportOptional = reportRepository.findById(reportId);
+        if (reportOptional.isPresent()) {
+            ProblemReport report = reportOptional.get();
+            report.setPriorityLevel(priorityLevel);
             return reportRepository.save(report);
         } else {
             throw new RuntimeException("Report not found with id: " + reportId);

@@ -8,6 +8,7 @@ public class ProblemReportDTO {
     private byte[] image; // Change to byte array
     private double latitude;
     private double longitude;
+    private String priorityLevel = "Pending";
 
     // Getters
     public String getReportType() {
@@ -38,6 +39,10 @@ public class ProblemReportDTO {
         return userId;
     }
 
+    public String getPriorityLevel() {
+        return priorityLevel;
+    }
+
 
     // Setters
     public void setReportType(String reportType) {
@@ -66,5 +71,9 @@ public class ProblemReportDTO {
 
     public void setUserId(String userId) {
         this.userId = userId;
+    }
+
+    public void setPriorityLevel(String priorityLevel) {
+        this.priorityLevel = priorityLevel;
     }
 }
