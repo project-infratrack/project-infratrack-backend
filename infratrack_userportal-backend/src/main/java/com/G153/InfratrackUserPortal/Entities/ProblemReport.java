@@ -15,6 +15,7 @@ public class ProblemReport {
     private String status;
     private double latitude;
     private double longitude;
+    private String priorityLevel = "Pending";
 
     // Getters and Setters
     public String getId() {
@@ -86,5 +87,13 @@ public class ProblemReport {
     }
     public void setUserId(String userId) {
         this.userId = userId;
+    }
+
+    public String getPriorityLevel() {
+        return priorityLevel;
+    }
+
+    public void setPriorityLevel(String priorityLevel) {
+        this.priorityLevel = priorityLevel;
     }
 }
