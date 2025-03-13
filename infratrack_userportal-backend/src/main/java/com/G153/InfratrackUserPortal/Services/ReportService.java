@@ -28,7 +28,6 @@ public class ReportService {
         this.reportRepository = reportRepository;
     }
 
-
     public ProblemReport saveProblemReport(ProblemReportDTO dto) {
         String userNIC = getUserNIC();
         ProblemReport problemReport = new ProblemReport();
@@ -42,6 +41,8 @@ public class ReportService {
         problemReport.setStatus("Pending");
         problemReport.setUserId(userNIC);
         problemReport.setPriorityLevel(dto.getPriorityLevel()); // Set priority level
+        problemReport.setThumbsUp(dto.getThumbsUp());  // ✅ Added thumbs-up field
+        problemReport.setThumbsDown(dto.getThumbsDown()); // ✅ Added thumbs-down field
 
         return reportRepository.save(problemReport);
     }
@@ -59,7 +60,6 @@ public class ReportService {
         return datePart + reportNumber;
     }
 
-
     public List<UserReportDetails> getAllReports() {
         List<ProblemReport> reports = reportRepository.findAll();
         return reports.stream().map(report -> {
@@ -71,6 +71,8 @@ public class ReportService {
             dto.setImage(report.getImage());
             dto.setLatitude(report.getLatitude());
             dto.setLongitude(report.getLongitude());
+            dto.setThumbsUp(report.getThumbsUp());
+            dto.setThumbsDown(report.getThumbsDown());
             return dto;
         }).collect(Collectors.toList());
     }
@@ -98,6 +100,7 @@ public class ReportService {
             throw new RuntimeException("Report not found with id: " + reportId);
         }
     }
+
     public ProblemReport updateReportPriorityLevel(String reportId, String priorityLevel) {
         Optional<ProblemReport> reportOptional = reportRepository.findById(reportId);
         if (reportOptional.isPresent()) {
@@ -107,5 +110,15 @@ public class ReportService {
         } else {
             throw new RuntimeException("Report not found with id: " + reportId);
         }
+    }
+
+    // ✅ Method to add thumbs-up to a report
+    public void addThumbsUp(String reportId) {
+        reportRepository.incrementThumbsUp(reportId);
+    }
+
+    // ✅ Method to add thumbs-down to a report
+    public void addThumbsDown(String reportId) {
+        reportRepository.incrementThumbsDown(reportId);
     }
 }
