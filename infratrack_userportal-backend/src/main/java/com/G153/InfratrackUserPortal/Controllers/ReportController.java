@@ -42,4 +42,18 @@ public class ReportController {
         String userNIC = reportService.getUserNIC();
         return reportService.getReportsByUserNIC(userNIC);
     }
+
+    // Endpoint to increase thumbs-up
+    @PostMapping("/{id}/thumbs-up")
+    public ResponseEntity<String> thumbsUp(@PathVariable String id) {
+        reportService.addThumbsUp(id);
+        return ResponseEntity.ok("Thumbs up added!");
+    }
+
+    // Endpoint to increase thumbs-down
+    @PostMapping("/{id}/thumbs-down")
+    public ResponseEntity<String> thumbsDown(@PathVariable String id) {
+        reportService.addThumbsDown(id);
+        return ResponseEntity.ok("Thumbs down added!");
+    }
 }

@@ -9,6 +9,8 @@ public class ProblemReportDTO {
     private double latitude;
     private double longitude;
     private String priorityLevel = "Pending";
+    private int thumbsUp;
+    private int thumbsDown;
 
     // Getters
     public String getReportType() {
@@ -43,6 +45,13 @@ public class ProblemReportDTO {
         return priorityLevel;
     }
 
+    public int getThumbsUp() {
+        return thumbsUp;
+    }
+
+    public int getThumbsDown() {
+        return thumbsDown;
+    }
 
     // Setters
     public void setReportType(String reportType) {
@@ -75,5 +84,13 @@ public class ProblemReportDTO {
 
     public void setPriorityLevel(String priorityLevel) {
         this.priorityLevel = priorityLevel;
+    }
+
+    public void setThumbsUp(int thumbsUp) {
+        this.thumbsUp = thumbsUp;
+    }
+
+    public void setThumbsDown(int thumbsDown) {
+        this.thumbsDown = thumbsDown;
     }
 }
