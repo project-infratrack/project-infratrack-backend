@@ -38,9 +38,13 @@ public class ReportController {
     }
 
     @GetMapping("/get-by-user")
-    public List<ProblemReport> getReportsByUserNIC(){
+    public ResponseEntity<?> getReportsByUserNIC() {
         String userNIC = reportService.getUserNIC();
-        return reportService.getReportsByUserNIC(userNIC);
+        List<ProblemReport> reports = reportService.getReportsByUserNIC(userNIC);
+        if (reports.isEmpty()) {
+            return ResponseEntity.status(404).body("No reports found for user with NIC: " + userNIC);
+        }       
+        return ResponseEntity.ok(reports);
     }
 
     // Endpoint to increase thumbs-up
