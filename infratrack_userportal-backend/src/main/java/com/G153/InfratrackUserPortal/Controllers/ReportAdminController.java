@@ -5,6 +5,8 @@ import com.G153.InfratrackUserPortal.Services.ReportService;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
+
 @RestController
 @RequestMapping("/api/admin/report")
 public class ReportAdminController {
@@ -27,5 +29,11 @@ public class ReportAdminController {
             @RequestParam String priorityLevel) {
         ProblemReport updatedReport = reportService.updateReportPriorityLevel(reportId, priorityLevel);
         return ResponseEntity.ok(updatedReport);
+    }
+
+    @GetMapping("/incoming-reports")
+    public ResponseEntity<List<ProblemReport>> getPendingReports() {
+        List<ProblemReport> pendingReports = reportService.getPendingReports();
+        return ResponseEntity.ok(pendingReports);
     }
 }

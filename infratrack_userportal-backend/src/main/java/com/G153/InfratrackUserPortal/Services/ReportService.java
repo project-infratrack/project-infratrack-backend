@@ -121,4 +121,7 @@ public class ReportService {
     public void addThumbsDown(String reportId) {
         reportRepository.incrementThumbsDown(reportId);
     }
+    public List<ProblemReport> getPendingReports() {
+        return reportRepository.findByPriorityLevel("Pending");
+    }
 }
