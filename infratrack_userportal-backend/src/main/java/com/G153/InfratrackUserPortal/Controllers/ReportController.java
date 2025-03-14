@@ -18,6 +18,7 @@ import java.util.List;
 public class ReportController {
     private final ReportService reportService;
 
+
     @Autowired
     public ReportController(ReportService reportService) {
         this.reportService = reportService;
@@ -46,31 +47,17 @@ public class ReportController {
         return ResponseEntity.ok(reports);
     }
 
-    // Endpoint to add a thumbs-up (Prevents duplicate votes)
+    // Endpoint to increase thumbs-up
     @PostMapping("/{id}/thumbs-up")
     public ResponseEntity<String> thumbsUp(@PathVariable String id) {
-        String userId = reportService.getUserNIC();
-        return reportService.addThumbsUp(id, userId);
+        reportService.addThumbsUp(id);
+        return ResponseEntity.ok("Thumbs up added!");
     }
 
-    // Endpoint to add a thumbs-down (Prevents duplicate votes)
+    // Endpoint to increase thumbs-down
     @PostMapping("/{id}/thumbs-down")
     public ResponseEntity<String> thumbsDown(@PathVariable String id) {
-        String userId = reportService.getUserNIC();
-        return reportService.addThumbsDown(id, userId);
-    }
-
-    // Endpoint to remove thumbs-up
-    @PostMapping("/{id}/remove-thumbs-up")
-    public ResponseEntity<String> removeThumbsUp(@PathVariable String id) {
-        String userId = reportService.getUserNIC();
-        return reportService.removeThumbsUp(id, userId);
-    }
-
-    // Endpoint to remove thumbs-down
-    @PostMapping("/{id}/remove-thumbs-down")
-    public ResponseEntity<String> removeThumbsDown(@PathVariable String id) {
-        String userId = reportService.getUserNIC();
-        return reportService.removeThumbsDown(id,userId);
+        reportService.addThumbsDown(id);
+        return ResponseEntity.ok("Thumbs down added!");
     }
 }
