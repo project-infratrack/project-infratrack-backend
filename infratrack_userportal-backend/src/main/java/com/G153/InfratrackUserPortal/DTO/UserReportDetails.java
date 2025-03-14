@@ -1,5 +1,7 @@
 package com.G153.InfratrackUserPortal.DTO;
 
+import java.util.Set;
+
 public class UserReportDetails {
     private String userId;
     private String reportType;
@@ -10,6 +12,8 @@ public class UserReportDetails {
     private double longitude;
     private int thumbsUp;
     private int thumbsDown;
+    private Set<String> thumbsUpUsers;
+    private Set<String> thumbsDownUsers;
 
     // Getters and setters
     public String getUserId() {
@@ -82,5 +86,21 @@ public class UserReportDetails {
 
     public void setThumbsDown(int thumbsDown) {
         this.thumbsDown = thumbsDown;
+    }
+
+    public Set<String> getThumbsUpUsers() {
+        return thumbsUpUsers;
+    }
+
+    public void setThumbsUpUsers(Set<String> thumbsUpUsers) {
+        this.thumbsUpUsers = thumbsUpUsers;
+    }
+
+    public Set<String> getThumbsDownUsers() {
+        return thumbsDownUsers;
+    }
+
+    public void setThumbsDownUsers(Set<String> thumbsDownUsers) {
+        this.thumbsDownUsers = thumbsDownUsers;
     }
 }
