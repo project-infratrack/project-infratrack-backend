@@ -125,4 +125,28 @@ public class ReportService {
     public List<ProblemReport> getDoneReports() {
         return reportRepository.findByStatus("Done");
     }
+
+    public List<ProblemReport> getHighPriorityReports() {
+        List<ProblemReport> reports = reportRepository.findByPriorityLevel("High Priority");
+        if (reports.isEmpty()) {
+            throw new RuntimeException("No high priority reports found");
+        }
+        return reports;
+    }
+
+    public List<ProblemReport> getMidPriorityReports() {
+        List<ProblemReport> reports = reportRepository.findByPriorityLevel("Mid Priority");
+        if (reports.isEmpty()) {
+            throw new RuntimeException("No mid priority reports found");
+        }
+        return reports;
+    }
+
+    public List<ProblemReport> getLowPriorityReports() {
+        List<ProblemReport> reports = reportRepository.findByPriorityLevel("Low Priority");
+        if (reports.isEmpty()) {
+            throw new RuntimeException("No low priority reports found");
+        }
+        return reports;
+    }
 }
