@@ -27,4 +27,5 @@ public interface ProblemReportRepository extends MongoRepository<ProblemReport, 
     @Update("{ '$inc': { 'thumbsDown': 1 } }")
     void incrementThumbsDown(String id);
 
+    List<ProblemReport> findByPriorityLevel(String priorityLevel);
 }
