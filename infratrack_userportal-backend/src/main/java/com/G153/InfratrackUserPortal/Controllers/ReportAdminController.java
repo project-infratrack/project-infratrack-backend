@@ -36,4 +36,10 @@ public class ReportAdminController {
         List<ProblemReport> pendingReports = reportService.getPendingReports();
         return ResponseEntity.ok(pendingReports);
     }
+
+    @GetMapping("/done-reports")
+    public ResponseEntity<List<ProblemReport>> getDoneReports() {
+        List<ProblemReport> doneReports = reportService.getDoneReports();
+        return ResponseEntity.ok(doneReports);
+    }
 }

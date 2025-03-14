@@ -28,4 +28,6 @@ public interface ProblemReportRepository extends MongoRepository<ProblemReport, 
     void incrementThumbsDown(String id);
 
     List<ProblemReport> findByPriorityLevel(String pending);
+
+    List<ProblemReport> findByStatus(String done);
 }
