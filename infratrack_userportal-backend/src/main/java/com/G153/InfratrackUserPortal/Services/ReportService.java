@@ -5,13 +5,9 @@ import com.G153.InfratrackUserPortal.DTO.UserReportDetails;
 import com.G153.InfratrackUserPortal.Entities.ProblemReport;
 import com.G153.InfratrackUserPortal.Repositories.ProblemReportRepository;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Service;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PutMapping;
-import org.springframework.web.bind.annotation.RequestParam;
 
 import java.text.SimpleDateFormat;
 import java.util.Date;
@@ -41,8 +37,8 @@ public class ReportService {
         problemReport.setStatus("Pending");
         problemReport.setUserId(userNIC);
         problemReport.setPriorityLevel(dto.getPriorityLevel()); // Set priority level
-        problemReport.setThumbsUp(dto.getThumbsUp());  // ✅ Added thumbs-up field
-        problemReport.setThumbsDown(dto.getThumbsDown()); // ✅ Added thumbs-down field
+        problemReport.setThumbsUp(dto.getThumbsUp());  // Added thumbs-up field
+        problemReport.setThumbsDown(dto.getThumbsDown()); // Added thumbs-down field
 
         return reportRepository.save(problemReport);
     }
@@ -112,16 +108,21 @@ public class ReportService {
         }
     }
 
-    // ✅ Method to add thumbs-up to a report
+    // Method to add thumbs-up to a report
     public void addThumbsUp(String reportId) {
         reportRepository.incrementThumbsUp(reportId);
     }
 
-    // ✅ Method to add thumbs-down to a report
+    // Method to add thumbs-down to a report
     public void addThumbsDown(String reportId) {
         reportRepository.incrementThumbsDown(reportId);
     }
+
     public List<ProblemReport> getPendingReports() {
         return reportRepository.findByPriorityLevel("Pending");
+    }
+
+    public List<ProblemReport> getDoneReports() {
+        return reportRepository.findByStatus("Done");
     }
 }
