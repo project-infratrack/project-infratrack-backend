@@ -8,8 +8,11 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Service;
+import org.springframework.web.multipart.MultipartFile;
 
+import java.io.IOException;
 import java.text.SimpleDateFormat;
+import java.util.Base64;
 import java.util.Date;
 import java.util.List;
 import java.util.Optional;
@@ -31,14 +34,23 @@ public class ReportService {
         problemReport.setReportType(dto.getReportType());
         problemReport.setDescription(dto.getDescription());
         problemReport.setLocation(dto.getLocation());
-        problemReport.setImage(dto.getImage());
         problemReport.setLatitude(dto.getLatitude());
         problemReport.setLongitude(dto.getLongitude());
         problemReport.setStatus("Pending");
         problemReport.setUserId(userNIC);
-        problemReport.setPriorityLevel(dto.getPriorityLevel()); // Set priority level
-        problemReport.setThumbsUp(dto.getThumbsUp());  // Added thumbs-up field
-        problemReport.setThumbsDown(dto.getThumbsDown()); // Added thumbs-down field
+        problemReport.setPriorityLevel(dto.getPriorityLevel());
+        problemReport.setThumbsUp(dto.getThumbsUp());
+        problemReport.setThumbsDown(dto.getThumbsDown());
+
+        // Convert MultipartFile to byte array
+        MultipartFile image = dto.getImage();
+        if (image != null && !image.isEmpty()) {
+            try {
+                problemReport.setImage(image.getBytes());
+            } catch (IOException e) {
+                throw new RuntimeException("Failed to convert image to byte array", e);
+            }
+        }
 
         return reportRepository.save(problemReport);
     }
@@ -64,11 +76,17 @@ public class ReportService {
             dto.setReportType(report.getReportType());
             dto.setDescription(report.getDescription());
             dto.setLocation(report.getLocation());
-            dto.setImage(report.getImage());
             dto.setLatitude(report.getLatitude());
             dto.setLongitude(report.getLongitude());
             dto.setThumbsUp(report.getThumbsUp());
             dto.setThumbsDown(report.getThumbsDown());
+
+            // Convert byte array to Base64 encoded string
+            if (report.getImage() != null) {
+                String base64Image = Base64.getEncoder().encodeToString(report.getImage());
+                dto.setImage(base64Image);
+            }
+
             return dto;
         }).collect(Collectors.toList());
     }

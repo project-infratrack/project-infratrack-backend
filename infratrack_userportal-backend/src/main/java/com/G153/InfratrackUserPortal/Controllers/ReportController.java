@@ -25,8 +25,7 @@ public class ReportController {
     }
 
     @PostMapping("/submit")
-    public ResponseEntity<ProblemReport> submitProblemReport(
-            @Valid @RequestBody ProblemReportDTO problemReportDTO) {
+    public ResponseEntity<ProblemReport> submitProblemReport(@ModelAttribute ProblemReportDTO problemReportDTO) {
         ProblemReport savedReport = reportService.saveProblemReport(problemReportDTO);
         return ResponseEntity.ok(savedReport);
     }
@@ -36,6 +35,7 @@ public class ReportController {
         List<UserReportDetails> reports = reportService.getAllReports();
         return ResponseEntity.ok(reports);
     }
+
 
     @GetMapping("/get-by-user")
     public ResponseEntity<?> getReportsByUserNIC() {
