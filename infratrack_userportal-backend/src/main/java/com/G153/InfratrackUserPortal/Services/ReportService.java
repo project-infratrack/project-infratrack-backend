@@ -5,13 +5,9 @@ import com.G153.InfratrackUserPortal.DTO.UserReportDetails;
 import com.G153.InfratrackUserPortal.Entities.ProblemReport;
 import com.G153.InfratrackUserPortal.Repositories.ProblemReportRepository;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Service;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PutMapping;
-import org.springframework.web.bind.annotation.RequestParam;
 
 import java.text.SimpleDateFormat;
 import java.util.Date;
@@ -227,3 +223,43 @@ public class ReportService {
         }
     }
 
+    public List<ProblemReport> getPendingReports() {
+        List<ProblemReport> reports = reportRepository.findByPriorityLevel("Pending");
+        if (reports.isEmpty()) {
+            throw new RuntimeException("No Incoming reports found");
+        }
+        return reports;
+    }
+
+    public List<ProblemReport> getDoneReports() {
+        List<ProblemReport> reports = reportRepository.findByStatus("Done");
+        if (reports.isEmpty()) {
+            throw new RuntimeException("No Reports found in History page ");
+        }
+        return reports;
+    }
+
+    public List<ProblemReport> getHighPriorityReports() {
+        List<ProblemReport> reports = reportRepository.findByPriorityLevel("High Priority");
+        if (reports.isEmpty()) {
+            throw new RuntimeException("No high priority reports found");
+        }
+        return reports;
+    }
+
+    public List<ProblemReport> getMidPriorityReports() {
+        List<ProblemReport> reports = reportRepository.findByPriorityLevel("Mid Priority");
+        if (reports.isEmpty()) {
+            throw new RuntimeException("No mid priority reports found");
+        }
+        return reports;
+    }
+
+    public List<ProblemReport> getLowPriorityReports() {
+        List<ProblemReport> reports = reportRepository.findByPriorityLevel("Low Priority");
+        if (reports.isEmpty()) {
+            throw new RuntimeException("No low priority reports found");
+        }
+        return reports;
+    }
+}

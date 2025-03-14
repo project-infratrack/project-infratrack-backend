@@ -29,11 +29,15 @@ public interface ProblemReportRepository extends MongoRepository<ProblemReport, 
     @Transactional
     @Query("{ '_id': ?0, 'thumbsUpUsers': ?1 }")
     @Update("{ '$pull': { 'thumbsUpUsers': ?1 }, '$inc': { 'thumbsUp': -1 } }")
-    void removeThumbsUp(String reportId, String userId);
+    void removeThumbsUp(String reportId, String userId)
 
     // Remove user from thumbs-down list and decrement count
     @Transactional
     @Query("{ '_id': ?0, 'thumbsDownUsers': ?1 }")
     @Update("{ '$pull': { 'thumbsDownUsers': ?1 }, '$inc': { 'thumbsDown': -1 } }")
     void removeThumbsDown(String reportId, String userId);
+  
+    List<ProblemReport> findByPriorityLevel(String pending);
+
+    List<ProblemReport> findByStatus(String done);
 }
