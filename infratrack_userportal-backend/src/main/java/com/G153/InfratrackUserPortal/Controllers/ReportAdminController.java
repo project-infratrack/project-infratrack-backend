@@ -33,9 +33,13 @@ public class ReportAdminController {
     }
 
     @GetMapping("/incoming-reports")
-    public ResponseEntity<List<ProblemReport>> getPendingReports() {
-        List<ProblemReport> pendingReports = reportService.getPendingReports();
-        return ResponseEntity.ok(pendingReports);
+    public ResponseEntity<?> getPendingReports() {
+        try {
+            List<ProblemReport> pendingReports = reportService.getPendingReports();
+            return ResponseEntity.ok(pendingReports);
+        } catch (RuntimeException e) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage());
+        }
     }
 
     @GetMapping("/done-reports")
