@@ -125,7 +125,7 @@ public class ReportService {
     public List<ProblemReport> getDoneReports() {
         List<ProblemReport> reports = reportRepository.findByStatus("Done");
         if (reports.isEmpty()) {
-            throw new RuntimeException("No done reports found");
+            throw new RuntimeException("No Reports found in History page ");
         }
         return reports;
     }
