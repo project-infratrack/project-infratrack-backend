@@ -119,7 +119,11 @@ public class ReportService {
     }
 
     public List<ProblemReport> getPendingReports() {
-        return reportRepository.findByPriorityLevel("Pending");
+        List<ProblemReport> reports = reportRepository.findByPriorityLevel("Pending");
+        if (reports.isEmpty()) {
+            throw new RuntimeException("No Incoming reports found");
+        }
+        return reports;
     }
 
     public List<ProblemReport> getDoneReports() {
