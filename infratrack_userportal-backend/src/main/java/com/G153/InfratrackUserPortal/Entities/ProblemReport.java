@@ -3,6 +3,9 @@ package com.G153.InfratrackUserPortal.Entities;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
 
+import java.util.HashSet;
+import java.util.Set;
+
 @Document(collection = "reports")
 public class ProblemReport {
     @Id
@@ -18,6 +21,8 @@ public class ProblemReport {
     private String priorityLevel = "Pending";
     private int thumbsUp;
     private int thumbsDown;
+    private Set<String> thumbsUpUsers = new HashSet<>();
+    private Set<String> thumbsDownUsers = new HashSet<>();
 
     // Getters and Setters
     public String getId() {
@@ -114,5 +119,21 @@ public class ProblemReport {
 
     public void setThumbsDown(int thumbsDown) {
         this.thumbsDown = thumbsDown;
+    }
+
+    public Set<String> getThumbsUpUsers() {
+        return thumbsUpUsers;
+    }
+
+    public void setThumbsUpUsers(Set<String> thumbsUpUsers) {
+        this.thumbsUpUsers = thumbsUpUsers;
+    }
+
+    public Set<String> getThumbsDownUsers() {
+        return thumbsDownUsers;
+    }
+
+    public void setThumbsDownUsers(Set<String> thumbsDownUsers) {
+        this.thumbsDownUsers = thumbsDownUsers;
     }
 }
