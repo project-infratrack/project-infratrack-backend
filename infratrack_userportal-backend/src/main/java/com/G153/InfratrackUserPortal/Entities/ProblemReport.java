@@ -15,6 +15,9 @@ public class ProblemReport {
     private String status;
     private double latitude;
     private double longitude;
+    private String priorityLevel = "Pending";
+    private int thumbsUp;
+    private int thumbsDown;
 
     // Getters and Setters
     public String getId() {
@@ -84,7 +87,32 @@ public class ProblemReport {
     public String getUserId() {
         return userId;
     }
+
     public void setUserId(String userId) {
         this.userId = userId;
+    }
+
+    public String getPriorityLevel() {
+        return priorityLevel;
+    }
+
+    public void setPriorityLevel(String priorityLevel) {
+        this.priorityLevel = priorityLevel;
+    }
+
+    public int getThumbsUp() {
+        return thumbsUp;
+    }
+
+    public void setThumbsUp(int thumbsUp) {
+        this.thumbsUp = thumbsUp;
+    }
+
+    public int getThumbsDown() {
+        return thumbsDown;
+    }
+
+    public void setThumbsDown(int thumbsDown) {
+        this.thumbsDown = thumbsDown;
     }
 }

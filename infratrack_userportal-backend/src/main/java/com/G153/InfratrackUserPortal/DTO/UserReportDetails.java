@@ -8,14 +8,18 @@ public class UserReportDetails {
     private byte[] image;
     private double latitude;
     private double longitude;
+    private int thumbsUp;
+    private int thumbsDown;
 
     // Getters and setters
     public String getUserId() {
         return userId;
     }
+
     public void setUserId(String userId) {
         this.userId = userId;
     }
+
     public String getReportType() {
         return reportType;
     }
@@ -62,5 +66,21 @@ public class UserReportDetails {
 
     public void setLongitude(double longitude) {
         this.longitude = longitude;
+    }
+
+    public int getThumbsUp() {
+        return thumbsUp;
+    }
+
+    public void setThumbsUp(int thumbsUp) {
+        this.thumbsUp = thumbsUp;
+    }
+
+    public int getThumbsDown() {
+        return thumbsDown;
+    }
+
+    public void setThumbsDown(int thumbsDown) {
+        this.thumbsDown = thumbsDown;
     }
 }

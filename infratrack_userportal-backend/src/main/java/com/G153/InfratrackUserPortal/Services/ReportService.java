@@ -12,6 +12,7 @@ import org.springframework.stereotype.Service;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Service
@@ -22,7 +23,6 @@ public class ReportService {
     public ReportService(ProblemReportRepository reportRepository) {
         this.reportRepository = reportRepository;
     }
-
 
     public ProblemReport saveProblemReport(ProblemReportDTO dto) {
         String userNIC = getUserNIC();
@@ -36,6 +36,9 @@ public class ReportService {
         problemReport.setLongitude(dto.getLongitude());
         problemReport.setStatus("Pending");
         problemReport.setUserId(userNIC);
+        problemReport.setPriorityLevel(dto.getPriorityLevel()); // Set priority level
+        problemReport.setThumbsUp(dto.getThumbsUp());  // Added thumbs-up field
+        problemReport.setThumbsDown(dto.getThumbsDown()); // Added thumbs-down field
 
         return reportRepository.save(problemReport);
     }
@@ -53,17 +56,19 @@ public class ReportService {
         return datePart + reportNumber;
     }
 
-
     public List<UserReportDetails> getAllReports() {
         List<ProblemReport> reports = reportRepository.findAll();
         return reports.stream().map(report -> {
             UserReportDetails dto = new UserReportDetails();
+            dto.setUserId(report.getUserId());
             dto.setReportType(report.getReportType());
             dto.setDescription(report.getDescription());
             dto.setLocation(report.getLocation());
             dto.setImage(report.getImage());
             dto.setLatitude(report.getLatitude());
             dto.setLongitude(report.getLongitude());
+            dto.setThumbsUp(report.getThumbsUp());
+            dto.setThumbsDown(report.getThumbsDown());
             return dto;
         }).collect(Collectors.toList());
     }
@@ -79,5 +84,69 @@ public class ReportService {
         } else {
             return principal.toString();
         }
+    }
+
+    public ProblemReport updateReportStatus(String reportId, String status) {
+        Optional<ProblemReport> reportOptional = reportRepository.findById(reportId);
+        if (reportOptional.isPresent()) {
+            ProblemReport report = reportOptional.get();
+            report.setStatus(status);
+            return reportRepository.save(report);
+        } else {
+            throw new RuntimeException("Report not found with id: " + reportId);
+        }
+    }
+
+    public ProblemReport updateReportPriorityLevel(String reportId, String priorityLevel) {
+        Optional<ProblemReport> reportOptional = reportRepository.findById(reportId);
+        if (reportOptional.isPresent()) {
+            ProblemReport report = reportOptional.get();
+            report.setPriorityLevel(priorityLevel);
+            return reportRepository.save(report);
+        } else {
+            throw new RuntimeException("Report not found with id: " + reportId);
+        }
+    }
+
+    // Method to add thumbs-up to a report
+    public void addThumbsUp(String reportId) {
+        reportRepository.incrementThumbsUp(reportId);
+    }
+
+    // Method to add thumbs-down to a report
+    public void addThumbsDown(String reportId) {
+        reportRepository.incrementThumbsDown(reportId);
+    }
+
+    public List<ProblemReport> getPendingReports() {
+        return reportRepository.findByPriorityLevel("Pending");
+    }
+
+    public List<ProblemReport> getDoneReports() {
+        return reportRepository.findByStatus("Done");
+    }
+
+    public List<ProblemReport> getHighPriorityReports() {
+        List<ProblemReport> reports = reportRepository.findByPriorityLevel("High Priority");
+        if (reports.isEmpty()) {
+            throw new RuntimeException("No high priority reports found");
+        }
+        return reports;
+    }
+
+    public List<ProblemReport> getMidPriorityReports() {
+        List<ProblemReport> reports = reportRepository.findByPriorityLevel("Mid Priority");
+        if (reports.isEmpty()) {
+            throw new RuntimeException("No mid priority reports found");
+        }
+        return reports;
+    }
+
+    public List<ProblemReport> getLowPriorityReports() {
+        List<ProblemReport> reports = reportRepository.findByPriorityLevel("Low Priority");
+        if (reports.isEmpty()) {
+            throw new RuntimeException("No low priority reports found");
+        }
+        return reports;
     }
 }
