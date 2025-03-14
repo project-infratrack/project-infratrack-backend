@@ -39,9 +39,13 @@ public class ReportAdminController {
     }
 
     @GetMapping("/done-reports")
-    public ResponseEntity<List<ProblemReport>> getDoneReports() {
-        List<ProblemReport> doneReports = reportService.getDoneReports();
-        return ResponseEntity.ok(doneReports);
+    public ResponseEntity<?> getDoneReports() {
+        try {
+            List<ProblemReport> doneReports = reportService.getDoneReports();
+            return ResponseEntity.ok(doneReports);
+        } catch (RuntimeException e) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage());
+        }
     }
 
     @GetMapping("/high-priority-reports")

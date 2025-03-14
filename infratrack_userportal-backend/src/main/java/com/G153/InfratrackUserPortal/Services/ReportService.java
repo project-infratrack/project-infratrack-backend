@@ -123,7 +123,11 @@ public class ReportService {
     }
 
     public List<ProblemReport> getDoneReports() {
-        return reportRepository.findByStatus("Done");
+        List<ProblemReport> reports = reportRepository.findByStatus("Done");
+        if (reports.isEmpty()) {
+            throw new RuntimeException("No done reports found");
+        }
+        return reports;
     }
 
     public List<ProblemReport> getHighPriorityReports() {
