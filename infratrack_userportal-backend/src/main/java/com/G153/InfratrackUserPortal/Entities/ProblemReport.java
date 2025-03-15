@@ -21,6 +21,7 @@ public class ProblemReport {
     private String priorityLevel = "Pending";
     private int thumbsUp;
     private int thumbsDown;
+    private String approval = "Pending";
     private Set<String> thumbsUpUsers = new HashSet<>();
     private Set<String> thumbsDownUsers = new HashSet<>();
 
@@ -121,6 +122,13 @@ public class ProblemReport {
         this.thumbsDown = thumbsDown;
     }
 
+    public String getApproval() {
+        return approval;
+    }
+
+    public void setApproval(String approval) {
+        this.approval = approval;
+    }
     public Set<String> getThumbsUpUsers() {
         return thumbsUpUsers;
     }
