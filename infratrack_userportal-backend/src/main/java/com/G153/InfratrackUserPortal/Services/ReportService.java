@@ -110,11 +110,21 @@ public class ReportService {
     }
 
     public List<ProblemReport> getPendingReports() {
-        List<ProblemReport> reports = reportRepository.findByPriorityLevel("Pending");
+        List<ProblemReport> reports = reportRepository.findByPriorityLevelAndApproval("Pending", "Pending");
         if (reports.isEmpty()) {
             throw new RuntimeException("No Incoming reports found");
         }
         return reports;
+    }
+    public ResponseEntity<String> updateApprovalStatus(String reportId, String approvalStatus) {
+        Optional<ProblemReport> reportOptional = reportRepository.findById(reportId);
+        if (reportOptional.isPresent()) {
+            ProblemReport report = reportOptional.get();
+            report.setApproval(approvalStatus);
+            reportRepository.save(report);
+            return ResponseEntity.ok("Approval status updated!");
+        }
+        return ResponseEntity.badRequest().body("Report not found!");
     }
 
     public List<ProblemReport> getDoneReports() {
