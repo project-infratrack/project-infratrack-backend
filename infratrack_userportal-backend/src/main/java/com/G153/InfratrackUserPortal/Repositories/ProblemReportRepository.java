@@ -13,19 +13,29 @@ import java.util.List;
 public interface ProblemReportRepository extends MongoRepository<ProblemReport, String> {
     List<ProblemReport> findByUserId(String userId);
 
-    // Increment thumbs-up count for a report
-
+    // Add user to thumbs-up list if they haven't already voted
     @Transactional
-    @Query("{ '_id': ?0 }")
-    @Update("{ '$inc': { 'thumbsUp': 1 } }")
-    void incrementThumbsUp(String id);
+    @Query("{ '_id': ?0, 'thumbsUpUsers': { '$ne': ?1 } }")
+    @Update("{ '$addToSet': { 'thumbsUpUsers': ?1 }, '$inc': { 'thumbsUp': 1 } }")
+    void addThumbsUp(String reportId, String userId);
 
-    // Increment thumbs-down count for a report
-
+    // Add user to thumbs-down list if they haven't already voted
     @Transactional
-    @Query("{ '_id': ?0, 'thumbsDown': { '$lt': 2 } }") // Only update if thumbsDown is less than 3
-    @Update("{ '$inc': { 'thumbsDown': 1 } }")
-    void incrementThumbsDown(String id);
+    @Query("{ '_id': ?0, 'thumbsDownUsers': { '$ne': ?1 } }")
+    @Update("{ '$addToSet': { 'thumbsDownUsers': ?1 }, '$inc': { 'thumbsDown': 1 } }")
+    void addThumbsDown(String reportId, String userId);
+
+    // Remove user from thumbs-up list and decrement count
+    @Transactional
+    @Query("{ '_id': ?0, 'thumbsUpUsers': ?1 }")
+    @Update("{ '$pull': { 'thumbsUpUsers': ?1 }, '$inc': { 'thumbsUp': -1 } }")
+    void removeThumbsUp(String reportId, String userId);
+
+    // Remove user from thumbs-down list and decrement count
+    @Transactional
+    @Query("{ '_id': ?0, 'thumbsDownUsers': ?1 }")
+    @Update("{ '$pull': { 'thumbsDownUsers': ?1 }, '$inc': { 'thumbsDown': -1 } }")
+    void removeThumbsDown(String reportId, String userId);
 
     List<ProblemReport> findByPriorityLevel(String pending);
 
