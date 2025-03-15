@@ -12,7 +12,6 @@ import org.springframework.stereotype.Service;
 
 import java.text.SimpleDateFormat;
 import java.util.Date;
-import java.util.HashSet;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -149,117 +148,88 @@ public class ReportService {
         }
         return reports;
     }
-    // Add thumbs-up if the user hasn't already up-voted
     public ResponseEntity<String> addThumbsUp(String reportId, String userId) {
         Optional<ProblemReport> reportOptional = reportRepository.findById(reportId);
         if (reportOptional.isPresent()) {
             ProblemReport report = reportOptional.get();
 
-            if (report.getThumbsUpUsers() == null) {
-                report.setThumbsUpUsers(new HashSet<>());
-            }
-            if (report.getThumbsDownUsers() == null) {
-                report.setThumbsDownUsers(new HashSet<>());
-            }
-
-            if (report.getThumbsUpUsers().contains(userId)) {
-                System.out.println("ERROR: User " + userId + " has ALREADY up-voted this report ID: " + reportId);
-
-                return ResponseEntity.status(400).body("You have already up-voted this report!");
-            }
-
-            // Remove from thumbsDown if previously down-voted
-            if (report.getThumbsDownUsers().contains(userId)) {
+            if (report.getThumbsDownUsers() != null && report.getThumbsDownUsers().contains(userId)) {
+                report.setThumbsDown(report.getThumbsDown() - 1);
                 report.getThumbsDownUsers().remove(userId);
-                report.setThumbsDown(report.getThumbsDown() > 0 ? report.getThumbsDown() - 1 : 0);
+            } else if (report.getThumbsUpUsers() != null && report.getThumbsUpUsers().contains(userId)) {
+                return ResponseEntity.status(400).body("You have already voted!");
             }
 
-            report.getThumbsUpUsers().add(userId);
             report.setThumbsUp(report.getThumbsUp() + 1);
-            reportRepository.save(report);
+            report.getThumbsUpUsers().add(userId);
 
+            reportRepository.save(report);
             return ResponseEntity.ok("Thumbs up added!");
         }
         return ResponseEntity.badRequest().body("Report not found!");
     }
 
-    // Add thumbs-down if the user hasn't already down-voted
     public ResponseEntity<String> addThumbsDown(String reportId, String userId) {
         Optional<ProblemReport> reportOptional = reportRepository.findById(reportId);
         if (reportOptional.isPresent()) {
             ProblemReport report = reportOptional.get();
 
-            if (report.getThumbsUpUsers() == null) {
-                report.setThumbsUpUsers(new HashSet<>());
-            }
-            if (report.getThumbsDownUsers() == null) {
-                report.setThumbsDownUsers(new HashSet<>());
-            }
-
-            if (report.getThumbsDownUsers().contains(userId)) {
-                // LOGGING THE ERROR
-                System.out.println("ERROR: User " + userId + " has ALREADY down-voted this report ID: " + reportId);
-
-                return ResponseEntity.status(400).body("You have already down-voted this report!");
-            }
-
-            // Remove from thumbsUp if previously up-voted
-            if (report.getThumbsUpUsers().contains(userId)) {
+            if (report.getThumbsUpUsers() != null && report.getThumbsUpUsers().contains(userId)) {
+                report.setThumbsUp(report.getThumbsUp() - 1);
                 report.getThumbsUpUsers().remove(userId);
-                report.setThumbsUp(report.getThumbsUp() > 0 ? report.getThumbsUp() - 1 : 0);
+            } else if (report.getThumbsDownUsers() != null && report.getThumbsDownUsers().contains(userId)) {
+                return ResponseEntity.status(400).body("You have already voted!");
             }
 
-            report.getThumbsDownUsers().add(userId);
             report.setThumbsDown(report.getThumbsDown() + 1);
-            reportRepository.save(report);
+            report.getThumbsDownUsers().add(userId);
 
+            if (report.getThumbsDown() >= 5) {
+                report.setApproval("Rejected");
+            }
+
+            reportRepository.save(report);
             return ResponseEntity.ok("Thumbs down added!");
         }
-
         return ResponseEntity.badRequest().body("Report not found!");
     }
-
-    // Remove thumbs-up if the user previously voted
     public ResponseEntity<String> removeThumbsUp(String reportId, String userId) {
         Optional<ProblemReport> reportOptional = reportRepository.findById(reportId);
         if (reportOptional.isPresent()) {
             ProblemReport report = reportOptional.get();
 
-            if (report.getThumbsUpUsers() == null) {
-                report.setThumbsUpUsers(new HashSet<>());
+            if (!report.getThumbsUpUsers().contains(userId)) {
+                return ResponseEntity.status(400).body("You have not voted thumbs up!");
             }
 
-            if (report.getThumbsUpUsers().contains(userId)) {
-                report.getThumbsUpUsers().remove(userId);
-                report.setThumbsUp(report.getThumbsUp() > 0 ? report.getThumbsUp() - 1 : 0);
-                reportRepository.save(report);
-                return ResponseEntity.ok("Thumbs up removed!");
-            }
-            return ResponseEntity.status(400).body("You haven't up-voted this report!");
+            report.setThumbsUp(report.getThumbsUp() - 1);
+            report.getThumbsUpUsers().remove(userId);
+
+            reportRepository.save(report);
+            return ResponseEntity.ok("Thumbs up removed!");
         }
         return ResponseEntity.badRequest().body("Report not found!");
     }
 
-
-    // Remove thumbs-down if the user previously voted
     public ResponseEntity<String> removeThumbsDown(String reportId, String userId) {
         Optional<ProblemReport> reportOptional = reportRepository.findById(reportId);
         if (reportOptional.isPresent()) {
             ProblemReport report = reportOptional.get();
 
-            if (report.getThumbsDownUsers() == null) {
-                report.setThumbsDownUsers(new HashSet<>());
+            if (!report.getThumbsDownUsers().contains(userId)) {
+                return ResponseEntity.status(400).body("You have not voted thumbs down!");
             }
 
-            if (report.getThumbsDownUsers().contains(userId)) {
-                report.getThumbsDownUsers().remove(userId);
-                report.setThumbsDown(report.getThumbsDown() > 0 ? report.getThumbsDown() - 1 : 0);
-                reportRepository.save(report);
-                return ResponseEntity.ok("Thumbs down removed!");
+            report.setThumbsDown(report.getThumbsDown() - 1);
+            report.getThumbsDownUsers().remove(userId);
+
+            if (report.getThumbsDown() < 5) {
+                report.setApproval("Accepted");
             }
-            return ResponseEntity.status(400).body("You haven't down-voted this report!");
+
+            reportRepository.save(report);
+            return ResponseEntity.ok("Thumbs down removed!");
         }
         return ResponseEntity.badRequest().body("Report not found!");
     }
-
 }
