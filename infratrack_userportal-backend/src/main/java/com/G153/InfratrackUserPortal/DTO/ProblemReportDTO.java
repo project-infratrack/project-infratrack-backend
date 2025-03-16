@@ -1,18 +1,21 @@
 package com.G153.InfratrackUserPortal.DTO;
 
-import org.springframework.web.multipart.MultipartFile;
+import java.util.HashSet;
+import java.util.Set;
 
 public class ProblemReportDTO {
     private String userId;
     private String reportType;
     private String description;
     private String location;
-    private MultipartFile image;
+    private byte[] image; // Change to byte array
     private double latitude;
     private double longitude;
     private String priorityLevel = "Pending";
     private int thumbsUp;
     private int thumbsDown;
+    private Set<String> thumbsUpUsers = new HashSet<>();
+    private Set<String> thumbsDownUsers = new HashSet<>();
 
     // Getters
     public String getReportType() {
@@ -27,7 +30,7 @@ public class ProblemReportDTO {
         return location;
     }
 
-    public MultipartFile getImage() {
+    public byte[] getImage() {
         return image;
     }
 
@@ -55,6 +58,14 @@ public class ProblemReportDTO {
         return thumbsDown;
     }
 
+    public Set<String> getThumbsUpUsers() {
+        return thumbsUpUsers;
+    }
+
+    public Set<String> getThumbsDownUsers() {
+        return thumbsDownUsers;
+    }
+
     // Setters
     public void setReportType(String reportType) {
         this.reportType = reportType;
@@ -68,7 +79,7 @@ public class ProblemReportDTO {
         this.location = location;
     }
 
-    public void setImage(MultipartFile image) {
+    public void setImage(byte[] image) {
         this.image = image;
     }
 
@@ -94,5 +105,13 @@ public class ProblemReportDTO {
 
     public void setThumbsDown(int thumbsDown) {
         this.thumbsDown = thumbsDown;
+    }
+
+    public void setThumbsUpUsers(Set<String> thumbsUpUsers) {
+        this.thumbsUpUsers = thumbsUpUsers;
+    }
+
+    public void setThumbsDownUsers(Set<String> thumbsDownUsers) {
+        this.thumbsDownUsers = thumbsDownUsers;
     }
 }

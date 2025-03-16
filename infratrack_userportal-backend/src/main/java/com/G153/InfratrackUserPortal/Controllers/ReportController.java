@@ -7,8 +7,6 @@ import com.G153.InfratrackUserPortal.Services.ReportService;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -43,21 +41,35 @@ public class ReportController {
         List<ProblemReport> reports = reportService.getReportsByUserNIC(userNIC);
         if (reports.isEmpty()) {
             return ResponseEntity.status(404).body("No reports found for user with NIC: " + userNIC);
-        }       
+        }
         return ResponseEntity.ok(reports);
     }
 
-    // Endpoint to increase thumbs-up
+    // Endpoint to add a thumbs-up (Prevents duplicate votes)
     @PostMapping("/{id}/thumbs-up")
     public ResponseEntity<String> thumbsUp(@PathVariable String id) {
-        reportService.addThumbsUp(id);
-        return ResponseEntity.ok("Thumbs up added!");
+        String userId = reportService.getUserNIC();
+        return reportService.addThumbsUp(id, userId);
     }
 
-    // Endpoint to increase thumbs-down
+    // Endpoint to add a thumbs-down (Prevents duplicate votes)
     @PostMapping("/{id}/thumbs-down")
     public ResponseEntity<String> thumbsDown(@PathVariable String id) {
-        reportService.addThumbsDown(id);
-        return ResponseEntity.ok("Thumbs down added!");
+        String userId = reportService.getUserNIC();
+        return reportService.addThumbsDown(id, userId);
+    }
+
+    // Endpoint to remove thumbs-up
+    @PostMapping("/{id}/remove-thumbs-up")
+    public ResponseEntity<String> removeThumbsUp(@PathVariable String id) {
+        String userId = reportService.getUserNIC();
+        return reportService.removeThumbsUp(id, userId);
+    }
+
+    // Endpoint to remove thumbs-down
+    @PostMapping("/{id}/remove-thumbs-down")
+    public ResponseEntity<String> removeThumbsDown(@PathVariable String id) {
+        String userId = reportService.getUserNIC();
+        return reportService.removeThumbsDown(id,userId);
     }
 }

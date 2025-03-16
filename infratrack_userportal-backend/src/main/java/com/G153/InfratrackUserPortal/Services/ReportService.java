@@ -5,6 +5,7 @@ import com.G153.InfratrackUserPortal.DTO.UserReportDetails;
 import com.G153.InfratrackUserPortal.Entities.ProblemReport;
 import com.G153.InfratrackUserPortal.Repositories.ProblemReportRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Service;
@@ -126,16 +127,6 @@ public class ReportService {
         }
     }
 
-    // Method to add thumbs-up to a report
-    public void addThumbsUp(String reportId) {
-        reportRepository.incrementThumbsUp(reportId);
-    }
-
-    // Method to add thumbs-down to a report
-    public void addThumbsDown(String reportId) {
-        reportRepository.incrementThumbsDown(reportId);
-    }
-
     public List<ProblemReport> getPendingReports() {
         List<ProblemReport> reports = reportRepository.findByPriorityLevel("Pending");
         if (reports.isEmpty()) {
@@ -174,5 +165,89 @@ public class ReportService {
             throw new RuntimeException("No low priority reports found");
         }
         return reports;
+    }
+    public ResponseEntity<String> addThumbsUp(String reportId, String userId) {
+        Optional<ProblemReport> reportOptional = reportRepository.findById(reportId);
+        if (reportOptional.isPresent()) {
+            ProblemReport report = reportOptional.get();
+
+            if (report.getThumbsDownUsers() != null && report.getThumbsDownUsers().contains(userId)) {
+                report.setThumbsDown(report.getThumbsDown() - 1);
+                report.getThumbsDownUsers().remove(userId);
+            } else if (report.getThumbsUpUsers() != null && report.getThumbsUpUsers().contains(userId)) {
+                return ResponseEntity.status(400).body("You have already voted!");
+            }
+
+            report.setThumbsUp(report.getThumbsUp() + 1);
+            report.getThumbsUpUsers().add(userId);
+
+            reportRepository.save(report);
+            return ResponseEntity.ok("Thumbs up added!");
+        }
+        return ResponseEntity.badRequest().body("Report not found!");
+    }
+
+    public ResponseEntity<String> addThumbsDown(String reportId, String userId) {
+        Optional<ProblemReport> reportOptional = reportRepository.findById(reportId);
+        if (reportOptional.isPresent()) {
+            ProblemReport report = reportOptional.get();
+
+            if (report.getThumbsUpUsers() != null && report.getThumbsUpUsers().contains(userId)) {
+                report.setThumbsUp(report.getThumbsUp() - 1);
+                report.getThumbsUpUsers().remove(userId);
+            } else if (report.getThumbsDownUsers() != null && report.getThumbsDownUsers().contains(userId)) {
+                return ResponseEntity.status(400).body("You have already voted!");
+            }
+
+            report.setThumbsDown(report.getThumbsDown() + 1);
+            report.getThumbsDownUsers().add(userId);
+
+            if (report.getThumbsDown() >= 5) {
+                report.setApproval("Rejected");
+            }
+
+            reportRepository.save(report);
+            return ResponseEntity.ok("Thumbs down added!");
+        }
+        return ResponseEntity.badRequest().body("Report not found!");
+    }
+    public ResponseEntity<String> removeThumbsUp(String reportId, String userId) {
+        Optional<ProblemReport> reportOptional = reportRepository.findById(reportId);
+        if (reportOptional.isPresent()) {
+            ProblemReport report = reportOptional.get();
+
+            if (!report.getThumbsUpUsers().contains(userId)) {
+                return ResponseEntity.status(400).body("You have not voted thumbs up!");
+            }
+
+            report.setThumbsUp(report.getThumbsUp() - 1);
+            report.getThumbsUpUsers().remove(userId);
+
+            reportRepository.save(report);
+            return ResponseEntity.ok("Thumbs up removed!");
+        }
+        return ResponseEntity.badRequest().body("Report not found!");
+    }
+
+    public ResponseEntity<String> removeThumbsDown(String reportId, String userId) {
+        Optional<ProblemReport> reportOptional = reportRepository.findById(reportId);
+        if (reportOptional.isPresent()) {
+            ProblemReport report = reportOptional.get();
+
+            if (!report.getThumbsDownUsers().contains(userId)) {
+                return ResponseEntity.status(400).body("You have not voted thumbs down!");
+            }
+
+            report.setThumbsDown(report.getThumbsDown() - 1);
+            report.getThumbsDownUsers().remove(userId);
+
+            if (report.getThumbsDown() < 5) {
+                report.setApproval("Accepted");
+            }
+
+            reportRepository.save(report);
+            return ResponseEntity.ok("Thumbs down removed!");
+        }
+        return ResponseEntity.badRequest().body("Report not found!");
     }
 }
