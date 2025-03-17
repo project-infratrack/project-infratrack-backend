@@ -75,4 +75,11 @@ public class UserController {
                 request.getConfirmPassword()
         );
     }
+
+    @GetMapping("/profile")
+    public ResponseEntity<UserProfileDetails> getUserProfile(@RequestHeader("Authorization") String token) {
+        String userId = tokenProvider.getUserIdFromJWT(token.substring(7)); // Remove "Bearer " prefix
+        UserProfileDetails userProfileDetails = userService.getUserProfileDetails(userId);
+        return ResponseEntity.ok(userProfileDetails);
+    }
 }
