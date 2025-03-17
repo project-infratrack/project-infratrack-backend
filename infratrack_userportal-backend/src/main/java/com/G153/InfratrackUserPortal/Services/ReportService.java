@@ -133,10 +133,13 @@ public class ReportService {
 
     public List<ProblemReport> getDoneReports() {
         List<ProblemReport> reports = reportRepository.findByStatus("Done");
-        if (reports.isEmpty()) {
-            throw new RuntimeException("No Reports found in History page ");
+        List<ProblemReport> filteredReports = reports.stream()
+                .filter(report -> "Accepted".equals(report.getApproval()))
+                .collect(Collectors.toList());
+        if (filteredReports.isEmpty()) {
+            throw new RuntimeException("No Reports found in History page");
         }
-        return reports;
+        return filteredReports;
     }
 
     public List<ProblemReport> getHighPriorityReports() {
