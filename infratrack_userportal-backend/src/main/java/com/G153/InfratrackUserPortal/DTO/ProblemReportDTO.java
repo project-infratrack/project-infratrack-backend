@@ -1,5 +1,7 @@
 package com.G153.InfratrackUserPortal.DTO;
 
+import org.springframework.web.multipart.MultipartFile;
+
 import java.util.HashSet;
 import java.util.Set;
 
@@ -8,7 +10,7 @@ public class ProblemReportDTO {
     private String reportType;
     private String description;
     private String location;
-    private byte[] image; // Change to byte array
+    private MultipartFile image;
     private double latitude;
     private double longitude;
     private String priorityLevel = "Pending";
@@ -30,7 +32,7 @@ public class ProblemReportDTO {
         return location;
     }
 
-    public byte[] getImage() {
+    public MultipartFile getImage() {
         return image;
     }
 
@@ -79,7 +81,7 @@ public class ProblemReportDTO {
         this.location = location;
     }
 
-    public void setImage(byte[] image) {
+    public void setImage(MultipartFile image) {
         this.image = image;
     }
 

@@ -6,7 +6,7 @@ public class UserReportDetails {
     private String reportType;
     private String description;
     private String location;
-    private byte[] image;
+    private String image;
     private double latitude;
     private double longitude;
     private int thumbsUp;
@@ -52,11 +52,11 @@ public class UserReportDetails {
         this.location = location;
     }
 
-    public byte[] getImage() {
+    public String getImage() {
         return image;
     }
 
-    public void setImage(byte[] image) {
+    public void setImage(String image) {
         this.image = image;
     }
 
