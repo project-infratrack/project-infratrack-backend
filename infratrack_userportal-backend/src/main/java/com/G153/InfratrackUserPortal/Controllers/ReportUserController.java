@@ -4,7 +4,6 @@ import com.G153.InfratrackUserPortal.DTO.ProblemReportDTO;
 import com.G153.InfratrackUserPortal.DTO.UserReportDetails;
 import com.G153.InfratrackUserPortal.Entities.ProblemReport;
 import com.G153.InfratrackUserPortal.Services.ReportService;
-import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -13,12 +12,12 @@ import java.util.List;
 
 @RestController
 @RequestMapping("/api/users/report")
-public class ReportController {
+public class ReportUserController {
     private final ReportService reportService;
 
 
     @Autowired
-    public ReportController(ReportService reportService) {
+    public ReportUserController(ReportService reportService) {
         this.reportService = reportService;
     }
 
