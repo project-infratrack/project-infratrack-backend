@@ -34,14 +34,13 @@ public class SecurityConfig {
                             response.getWriter().write("Token expired or invalid");
                         }))
                 .authorizeHttpRequests(auth -> auth
-                            .requestMatchers("/api/users/register", "/api/users/login",
-                                    "/api/users/forget-password", "/api/users/verify-otp",
-                                    "/api/users/reset-password", "/api/admin/login", "/api/admin/register", "/swagger-ui/**",
-                                    "/v3/api-docs/**", "/swagger-ui.html").permitAll()
+                        .requestMatchers("/api/users/register", "/api/users/login",
+                                "/api/users/forget-password", "/api/users/verify-otp",
+                                "/api/users/reset-password", "/api/admin/login", "/api/admin/register", "/swagger-ui/**",
+                                "/v3/api-docs/**", "/swagger-ui.html").permitAll()
                         .anyRequest().authenticated())
                 .addFilterBefore(jwtAuthenticationFilter(),
                         UsernamePasswordAuthenticationFilter.class);
-
         return http.build();
     }
 

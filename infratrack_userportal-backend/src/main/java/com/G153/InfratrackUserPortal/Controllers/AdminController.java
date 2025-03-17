@@ -4,7 +4,6 @@ import com.G153.InfratrackUserPortal.Entities.Admin;
 import com.G153.InfratrackUserPortal.Services.AdminService;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-
 import jakarta.validation.Valid;
 
 @RestController
@@ -17,7 +16,7 @@ public class AdminController {
     }
 
     @PostMapping("/login")
-    public ResponseEntity<String> login(@Valid @RequestBody AdminLoginRequest request) {
+    public ResponseEntity<?> login(@Valid @RequestBody AdminLoginRequest request) {
         return adminService.loginAdmin(request);
     }
 

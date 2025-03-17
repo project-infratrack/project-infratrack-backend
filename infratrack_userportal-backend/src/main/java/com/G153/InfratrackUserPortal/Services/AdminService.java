@@ -1,30 +1,36 @@
 package com.G153.InfratrackUserPortal.Services;
+
 import com.G153.InfratrackUserPortal.DTO.AdminLoginRequest;
+import com.G153.InfratrackUserPortal.DTO.JwtAuthResponse;
 import com.G153.InfratrackUserPortal.Entities.Admin;
 import com.G153.InfratrackUserPortal.Repositories.AdminRepository;
+import com.G153.InfratrackUserPortal.security.JwtTokenProvider;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
-
 import java.util.Optional;
 
 @Service
 public class AdminService {
     private final AdminRepository adminRepository;
     private final PasswordEncoder passwordEncoder;
+    private final JwtTokenProvider jwtTokenProvider;
 
-    public AdminService(AdminRepository adminRepository, PasswordEncoder passwordEncoder) {
+    public AdminService(AdminRepository adminRepository,
+                        PasswordEncoder passwordEncoder,
+                        JwtTokenProvider jwtTokenProvider) {
         this.adminRepository = adminRepository;
         this.passwordEncoder = passwordEncoder;
+        this.jwtTokenProvider = jwtTokenProvider;
     }
 
-    public ResponseEntity<String> loginAdmin(AdminLoginRequest request) {
+    public ResponseEntity<?> loginAdmin(AdminLoginRequest request) {
         Optional<Admin> adminOptional = adminRepository.findByAdminNo(request.getAdminNo());
-
         if (adminOptional.isPresent()) {
             Admin admin = adminOptional.get();
             if (passwordEncoder.matches(request.getPassword(), admin.getPassword())) {
-                return ResponseEntity.ok("Login successful");
+                String token = jwtTokenProvider.generateToken(admin.getAdminNo());
+                return ResponseEntity.ok(new JwtAuthResponse(token));
             } else {
                 return ResponseEntity.status(401).body("Invalid credentials");
             }
@@ -41,4 +47,3 @@ public class AdminService {
         return ResponseEntity.ok("Admin registered successfully");
     }
 }
-
