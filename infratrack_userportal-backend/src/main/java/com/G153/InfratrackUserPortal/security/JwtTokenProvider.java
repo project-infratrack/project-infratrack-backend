@@ -1,5 +1,6 @@
 package com.G153.InfratrackUserPortal.security;
 
+import com.G153.InfratrackUserPortal.DTO.UserProfileDetails;
 import io.jsonwebtoken.*;
 import io.jsonwebtoken.security.Keys;
 import io.jsonwebtoken.security.SignatureException;
@@ -79,6 +80,15 @@ public class JwtTokenProvider {
                 "issuedAt", claims.getIssuedAt(),
                 "expiration", claims.getExpiration()
         );
+    }
+
+    public String getUserIdFromJWT(String token) {
+        Claims claims = Jwts.parserBuilder()
+                .setSigningKey(getSigningKey())
+                .build()
+                .parseClaimsJws(token)
+                .getBody();
+        return claims.getSubject();
     }
     
 }
