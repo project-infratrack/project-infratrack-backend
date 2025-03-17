@@ -9,11 +9,8 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Service;
-import org.springframework.web.multipart.MultipartFile;
 
-import java.io.IOException;
 import java.text.SimpleDateFormat;
-import java.util.Base64;
 import java.util.Date;
 import java.util.List;
 import java.util.Optional;
@@ -35,23 +32,14 @@ public class ReportService {
         problemReport.setReportType(dto.getReportType());
         problemReport.setDescription(dto.getDescription());
         problemReport.setLocation(dto.getLocation());
+        problemReport.setImage(dto.getImage());
         problemReport.setLatitude(dto.getLatitude());
         problemReport.setLongitude(dto.getLongitude());
         problemReport.setStatus("Pending");
         problemReport.setUserId(userNIC);
-        problemReport.setPriorityLevel(dto.getPriorityLevel());
-        problemReport.setThumbsUp(dto.getThumbsUp());
-        problemReport.setThumbsDown(dto.getThumbsDown());
-
-        // Convert MultipartFile to byte array
-        MultipartFile image = dto.getImage();
-        if (image != null && !image.isEmpty()) {
-            try {
-                problemReport.setImage(image.getBytes());
-            } catch (IOException e) {
-                throw new RuntimeException("Failed to convert image to byte array", e);
-            }
-        }
+        problemReport.setPriorityLevel(dto.getPriorityLevel()); // Set priority level
+        problemReport.setThumbsUp(dto.getThumbsUp());  // Added thumbs-up field
+        problemReport.setThumbsDown(dto.getThumbsDown()); // Added thumbs-down field
 
         return reportRepository.save(problemReport);
     }
@@ -71,25 +59,23 @@ public class ReportService {
 
     public List<UserReportDetails> getAllReports() {
         List<ProblemReport> reports = reportRepository.findAll();
-        return reports.stream().map(report -> {
-            UserReportDetails dto = new UserReportDetails();
-            dto.setUserId(report.getUserId());
-            dto.setReportType(report.getReportType());
-            dto.setDescription(report.getDescription());
-            dto.setLocation(report.getLocation());
-            dto.setLatitude(report.getLatitude());
-            dto.setLongitude(report.getLongitude());
-            dto.setThumbsUp(report.getThumbsUp());
-            dto.setThumbsDown(report.getThumbsDown());
-
-            // Convert byte array to Base64 encoded string
-            if (report.getImage() != null) {
-                String base64Image = Base64.getEncoder().encodeToString(report.getImage());
-                dto.setImage(base64Image);
-            }
-
-            return dto;
-        }).collect(Collectors.toList());
+        return reports.stream()
+                .filter(report -> "Accepted".equals(report.getApproval()))
+                .map(report -> {
+                    UserReportDetails dto = new UserReportDetails();
+                    dto.setId(report.getId());
+                    dto.setUserId(report.getUserId());
+                    dto.setReportType(report.getReportType());
+                    dto.setDescription(report.getDescription());
+                    dto.setLocation(report.getLocation());
+                    dto.setImage(report.getImage());
+                    dto.setLatitude(report.getLatitude());
+                    dto.setLongitude(report.getLongitude());
+                    dto.setThumbsUp(report.getThumbsUp());
+                    dto.setThumbsDown(report.getThumbsDown());
+                    return dto;
+                })
+                .collect(Collectors.toList());
     }
 
     public List<ProblemReport> getReportsByUserNIC(String userNIC) {
@@ -128,19 +114,32 @@ public class ReportService {
     }
 
     public List<ProblemReport> getPendingReports() {
-        List<ProblemReport> reports = reportRepository.findByPriorityLevel("Pending");
+        List<ProblemReport> reports = reportRepository.findByPriorityLevelAndApproval("Pending", "Pending");
         if (reports.isEmpty()) {
             throw new RuntimeException("No Incoming reports found");
         }
         return reports;
     }
+    public ResponseEntity<String> updateApprovalStatus(String reportId, String approvalStatus) {
+        Optional<ProblemReport> reportOptional = reportRepository.findById(reportId);
+        if (reportOptional.isPresent()) {
+            ProblemReport report = reportOptional.get();
+            report.setApproval(approvalStatus);
+            reportRepository.save(report);
+            return ResponseEntity.ok("Approval status updated!");
+        }
+        return ResponseEntity.badRequest().body("Report not found!");
+    }
 
     public List<ProblemReport> getDoneReports() {
         List<ProblemReport> reports = reportRepository.findByStatus("Done");
-        if (reports.isEmpty()) {
-            throw new RuntimeException("No Reports found in History page ");
+        List<ProblemReport> filteredReports = reports.stream()
+                .filter(report -> "Accepted".equals(report.getApproval()))
+                .collect(Collectors.toList());
+        if (filteredReports.isEmpty()) {
+            throw new RuntimeException("No Reports found in History page");
         }
-        return reports;
+        return filteredReports;
     }
 
     public List<ProblemReport> getHighPriorityReports() {

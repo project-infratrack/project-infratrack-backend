@@ -41,6 +41,14 @@ public class ReportAdminController {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage());
         }
     }
+    @PutMapping("/{reportId}/approval")
+    public ResponseEntity<String> updateApprovalStatus(@PathVariable String reportId, @RequestParam String approvalStatus) {
+        try {
+            return reportService.updateApprovalStatus(reportId, approvalStatus);
+        } catch (RuntimeException e) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage());
+        }
+    }
 
     @GetMapping("/done-reports")
     public ResponseEntity<?> getDoneReports() {

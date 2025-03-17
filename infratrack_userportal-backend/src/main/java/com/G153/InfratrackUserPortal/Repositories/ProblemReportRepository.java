@@ -37,7 +37,9 @@ public interface ProblemReportRepository extends MongoRepository<ProblemReport, 
     @Update("{ '$pull': { 'thumbsDownUsers': ?1 }, '$inc': { 'thumbsDown': -1 } }")
     void removeThumbsDown(String reportId, String userId);
 
-    List<ProblemReport> findByPriorityLevel(String pending);
+    List<ProblemReport> findByPriorityLevelAndApproval(String priorityLevel, String approval);;
 
     List<ProblemReport> findByStatus(String done);
+
+    List<ProblemReport> findByPriorityLevel(String priorityLevel);
 }
