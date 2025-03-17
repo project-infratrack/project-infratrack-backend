@@ -95,6 +95,9 @@ public class ReportService {
         Optional<ProblemReport> reportOptional = reportRepository.findById(reportId);
         if (reportOptional.isPresent()) {
             ProblemReport report = reportOptional.get();
+            if (!"Accepted".equals(report.getApproval())) {
+                throw new RuntimeException("Report approval status is not 'Accepted'");
+            }
             report.setStatus(status);
             return reportRepository.save(report);
         } else {
