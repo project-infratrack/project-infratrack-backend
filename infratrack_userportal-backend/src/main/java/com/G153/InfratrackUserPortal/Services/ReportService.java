@@ -59,19 +59,23 @@ public class ReportService {
 
     public List<UserReportDetails> getAllReports() {
         List<ProblemReport> reports = reportRepository.findAll();
-        return reports.stream().map(report -> {
-            UserReportDetails dto = new UserReportDetails();
-            dto.setUserId(report.getUserId());
-            dto.setReportType(report.getReportType());
-            dto.setDescription(report.getDescription());
-            dto.setLocation(report.getLocation());
-            dto.setImage(report.getImage());
-            dto.setLatitude(report.getLatitude());
-            dto.setLongitude(report.getLongitude());
-            dto.setThumbsUp(report.getThumbsUp());
-            dto.setThumbsDown(report.getThumbsDown());
-            return dto;
-        }).collect(Collectors.toList());
+        return reports.stream()
+                .filter(report -> "Accepted".equals(report.getApproval()))
+                .map(report -> {
+                    UserReportDetails dto = new UserReportDetails();
+                    dto.setId(report.getId());
+                    dto.setUserId(report.getUserId());
+                    dto.setReportType(report.getReportType());
+                    dto.setDescription(report.getDescription());
+                    dto.setLocation(report.getLocation());
+                    dto.setImage(report.getImage());
+                    dto.setLatitude(report.getLatitude());
+                    dto.setLongitude(report.getLongitude());
+                    dto.setThumbsUp(report.getThumbsUp());
+                    dto.setThumbsDown(report.getThumbsDown());
+                    return dto;
+                })
+                .collect(Collectors.toList());
     }
 
     public List<ProblemReport> getReportsByUserNIC(String userNIC) {
