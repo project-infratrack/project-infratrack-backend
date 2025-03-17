@@ -1,6 +1,7 @@
 package com.G153.InfratrackUserPortal.Services;
 
 import com.G153.InfratrackUserPortal.DTO.JwtAuthResponse;
+import com.G153.InfratrackUserPortal.DTO.UserProfileDetails;
 import com.G153.InfratrackUserPortal.DTO.UserRegistrationRequest;
 import com.G153.InfratrackUserPortal.Entities.User;
 import com.G153.InfratrackUserPortal.Repositories.UserRepository;
@@ -161,5 +162,16 @@ public class UserService {
 
     public Optional<User> getUserByIdNumber(String idNumber) {
         return userRepository.findByIdNumber(idNumber);
+    }
+
+    public UserProfileDetails getUserProfileDetails(String userId) {
+        User user = userRepository.findByIdNumber(userId).orElseThrow(() -> new RuntimeException("User not found"));
+        UserProfileDetails userProfileDetails = new UserProfileDetails();
+        userProfileDetails.setName(user.getFirstName() + " " + user.getLastName());
+        userProfileDetails.setIdNumber(user.getIdNumber());
+        userProfileDetails.setUsername(user.getUsername());
+        userProfileDetails.setEmail(user.getEmail());
+        userProfileDetails.setMobileNo(user.getMobileNumber());
+        return userProfileDetails;
     }
 }
