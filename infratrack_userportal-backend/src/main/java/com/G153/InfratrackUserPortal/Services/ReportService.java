@@ -19,15 +19,29 @@ import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
+/**
+ * Service class for managing problem reports.
+ */
 @Service
 public class ReportService {
     private final ProblemReportRepository reportRepository;
 
+    /**
+     * Constructor to initialize ReportService with required dependencies.
+     *
+     * @param reportRepository the repository for ProblemReport entities
+     */
     @Autowired
     public ReportService(ProblemReportRepository reportRepository) {
         this.reportRepository = reportRepository;
     }
 
+    /**
+     * Saves a problem report.
+     *
+     * @param dto the problem report data transfer object
+     * @return the saved problem report
+     */
     public ProblemReport saveProblemReport(ProblemReportDTO dto) {
         String userNIC = getUserNIC();
         ProblemReport problemReport = new ProblemReport();
@@ -56,6 +70,11 @@ public class ReportService {
         return reportRepository.save(problemReport);
     }
 
+    /**
+     * Generates a unique report ID based on the current date and the number of reports.
+     *
+     * @return the generated report ID
+     */
     private String generateReportId() {
         SimpleDateFormat dateFormat = new SimpleDateFormat("yyMMdd");
         String datePart = dateFormat.format(new Date());
@@ -69,6 +88,11 @@ public class ReportService {
         return datePart + reportNumber;
     }
 
+    /**
+     * Retrieves all accepted problem reports.
+     *
+     * @return a list of user report details
+     */
     public List<UserReportDetails> getAllReports() {
         List<ProblemReport> reports = reportRepository.findAll();
         return reports.stream()
@@ -96,10 +120,21 @@ public class ReportService {
                 .collect(Collectors.toList());
     }
 
+    /**
+     * Retrieves problem reports by user NIC.
+     *
+     * @param userNIC the user NIC
+     * @return a list of problem reports associated with the user NIC
+     */
     public List<ProblemReport> getReportsByUserNIC(String userNIC) {
         return reportRepository.findByUserId(userNIC);
     }
 
+    /**
+     * Retrieves the NIC of the currently authenticated user.
+     *
+     * @return the user NIC
+     */
     public String getUserNIC(){
         Object principal = SecurityContextHolder.getContext().getAuthentication().getPrincipal();
         if (principal instanceof UserDetails) {
@@ -109,6 +144,13 @@ public class ReportService {
         }
     }
 
+    /**
+     * Updates the status of a problem report.
+     *
+     * @param reportId the report ID
+     * @param status the new status
+     * @return the updated problem report
+     */
     public ProblemReport updateReportStatus(String reportId, String status) {
         Optional<ProblemReport> reportOptional = reportRepository.findById(reportId);
         if (reportOptional.isPresent()) {
@@ -123,6 +165,13 @@ public class ReportService {
         }
     }
 
+    /**
+     * Updates the priority level of a problem report.
+     *
+     * @param reportId the report ID
+     * @param priorityLevel the new priority level
+     * @return the updated problem report
+     */
     public ProblemReport updateReportPriorityLevel(String reportId, String priorityLevel) {
         Optional<ProblemReport> reportOptional = reportRepository.findById(reportId);
         if (reportOptional.isPresent()) {
@@ -134,6 +183,11 @@ public class ReportService {
         }
     }
 
+    /**
+     * Retrieves all pending problem reports.
+     *
+     * @return a list of pending problem reports
+     */
     public List<ProblemReport> getPendingReports() {
         List<ProblemReport> reports = reportRepository.findByPriorityLevelAndApproval("Pending", "Pending");
         if (reports.isEmpty()) {
@@ -141,6 +195,15 @@ public class ReportService {
         }
         return reports;
     }
+
+    /**
+     * Updates the approval status of a problem report.
+     *
+     * @param reportId the report ID
+     * @param approvalStatus the new approval status
+     * @return a ResponseEntity containing a success message if the update is successful,
+     *         or an error message if the report is not found
+     */
     public ResponseEntity<String> updateApprovalStatus(String reportId, String approvalStatus) {
         Optional<ProblemReport> reportOptional = reportRepository.findById(reportId);
         if (reportOptional.isPresent()) {
@@ -152,6 +215,11 @@ public class ReportService {
         return ResponseEntity.badRequest().body("Report not found!");
     }
 
+    /**
+     * Retrieves all done problem reports.
+     *
+     * @return a list of done problem reports
+     */
     public List<ProblemReport> getDoneReports() {
         List<ProblemReport> reports = reportRepository.findByStatus("Done");
         List<ProblemReport> filteredReports = reports.stream()
@@ -163,6 +231,11 @@ public class ReportService {
         return filteredReports;
     }
 
+    /**
+     * Retrieves all high priority problem reports.
+     *
+     * @return a list of high priority problem reports
+     */
     public List<ProblemReport> getHighPriorityReports() {
         List<ProblemReport> reports = reportRepository.findByPriorityLevel("High Priority");
         if (reports.isEmpty()) {
@@ -171,6 +244,11 @@ public class ReportService {
         return reports;
     }
 
+    /**
+     * Retrieves all mid priority problem reports.
+     *
+     * @return a list of mid priority problem reports
+     */
     public List<ProblemReport> getMidPriorityReports() {
         List<ProblemReport> reports = reportRepository.findByPriorityLevel("Mid Priority");
         if (reports.isEmpty()) {
@@ -179,6 +257,11 @@ public class ReportService {
         return reports;
     }
 
+    /**
+     * Retrieves all low priority problem reports.
+     *
+     * @return a list of low priority problem reports
+     */
     public List<ProblemReport> getLowPriorityReports() {
         List<ProblemReport> reports = reportRepository.findByPriorityLevel("Low Priority");
         if (reports.isEmpty()) {
@@ -186,6 +269,15 @@ public class ReportService {
         }
         return reports;
     }
+
+    /**
+     * Adds a thumbs-up vote to a problem report.
+     *
+     * @param reportId the report ID
+     * @param userId the user ID
+     * @return a ResponseEntity containing a success message if the thumbs-up is added,
+     *         or an error message if the report is not found or the user has already voted
+     */
     public ResponseEntity<String> addThumbsUp(String reportId, String userId) {
         Optional<ProblemReport> reportOptional = reportRepository.findById(reportId);
         if (reportOptional.isPresent()) {
@@ -207,6 +299,14 @@ public class ReportService {
         return ResponseEntity.badRequest().body("Report not found!");
     }
 
+    /**
+     * Adds a thumbs-down vote to a problem report.
+     *
+     * @param reportId the report ID
+     * @param userId the user ID
+     * @return a ResponseEntity containing a success message if the thumbs-down is added,
+     *         or an error message if the report is not found or the user has already voted
+     */
     public ResponseEntity<String> addThumbsDown(String reportId, String userId) {
         Optional<ProblemReport> reportOptional = reportRepository.findById(reportId);
         if (reportOptional.isPresent()) {
@@ -231,6 +331,15 @@ public class ReportService {
         }
         return ResponseEntity.badRequest().body("Report not found!");
     }
+
+    /**
+     * Removes a thumbs-up vote from a problem report.
+     *
+     * @param reportId the report ID
+     * @param userId the user ID
+     * @return a ResponseEntity containing a success message if the thumbs-up is removed,
+     *         or an error message if the report is not found or the user has not voted thumbs-up
+     */
     public ResponseEntity<String> removeThumbsUp(String reportId, String userId) {
         Optional<ProblemReport> reportOptional = reportRepository.findById(reportId);
         if (reportOptional.isPresent()) {
@@ -249,6 +358,14 @@ public class ReportService {
         return ResponseEntity.badRequest().body("Report not found!");
     }
 
+    /**
+     * Removes a thumbs-down vote from a problem report.
+     *
+     * @param reportId the report ID
+     * @param userId the user ID
+     * @return a ResponseEntity containing a success message if the thumbs-down is removed,
+     *         or an error message if the report is not found or the user has not voted thumbs-down
+     */
     public ResponseEntity<String> removeThumbsDown(String reportId, String userId) {
         Optional<ProblemReport> reportOptional = reportRepository.findById(reportId);
         if (reportOptional.isPresent()) {
