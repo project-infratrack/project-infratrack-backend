@@ -10,12 +10,22 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import java.util.Optional;
 
+/**
+ * Service class for managing Admin operations.
+ */
 @Service
 public class AdminService {
     private final AdminRepository adminRepository;
     private final PasswordEncoder passwordEncoder;
     private final JwtTokenProvider jwtTokenProvider;
 
+    /**
+     * Constructor to initialize AdminService with required dependencies.
+     *
+     * @param adminRepository the repository for Admin entities
+     * @param passwordEncoder the password encoder
+     * @param jwtTokenProvider the JWT token provider
+     */
     public AdminService(AdminRepository adminRepository,
                         PasswordEncoder passwordEncoder,
                         JwtTokenProvider jwtTokenProvider) {
@@ -24,6 +34,13 @@ public class AdminService {
         this.jwtTokenProvider = jwtTokenProvider;
     }
 
+    /**
+     * Authenticates an admin and generates a JWT token if credentials are valid.
+     *
+     * @param request the admin login request containing admin number and password
+     * @return a ResponseEntity containing the JWT token if authentication is successful,
+     *         or an error message if authentication fails
+     */
     public ResponseEntity<?> loginAdmin(AdminLoginRequest request) {
         Optional<Admin> adminOptional = adminRepository.findByAdminNo(request.getAdminNo());
         if (adminOptional.isPresent()) {
@@ -38,6 +55,13 @@ public class AdminService {
         return ResponseEntity.status(404).body("Admin not found");
     }
 
+    /**
+     * Registers a new admin by saving their details in the repository.
+     *
+     * @param admin the admin entity to be registered
+     * @return a ResponseEntity containing a success message if registration is successful,
+     *         or an error message if the admin already exists
+     */
     public ResponseEntity<String> registerAdmin(Admin admin) {
         if (adminRepository.findByAdminNo(admin.getAdminNo()).isPresent()) {
             return ResponseEntity.badRequest().body("Admin already exists");

@@ -6,9 +6,17 @@ import io.swagger.v3.oas.models.info.License;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
+/**
+ * Configuration class for Swagger/OpenAPI documentation.
+ */
 @Configuration
 public class SwaggerConfig {
 
+    /**
+     * Creates an OpenAPI bean with the specified information.
+     *
+     * @return the configured OpenAPI instance
+     */
     @Bean
     public OpenAPI infratrackOpenAPI() {
         return new OpenAPI()
