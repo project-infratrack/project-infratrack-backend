@@ -113,4 +113,16 @@ public class ReportUserController {
         String userId = reportService.getUserNIC();
         return reportService.removeThumbsDown(id, userId);
     }
+
+    /**
+     * Endpoint for retrieving report details by report ID.
+     *
+     * @param reportId the report ID
+     * @return a ResponseEntity containing the report details if found,
+     *         or an error message if the report is not found
+     */
+    @GetMapping("/{reportId}")
+    public ResponseEntity<UserReportDetails> getReportDetailsById(@PathVariable String reportId) {
+        return reportService.getReportDetailsById(reportId);
+    }
 }

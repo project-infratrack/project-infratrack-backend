@@ -1,5 +1,6 @@
 package com.G153.InfratrackUserPortal.Controllers;
 
+import com.G153.InfratrackUserPortal.DTO.UserReportDetails;
 import com.G153.InfratrackUserPortal.Entities.ProblemReport;
 import com.G153.InfratrackUserPortal.Services.ReportService;
 import org.springframework.http.HttpStatus;
@@ -144,5 +145,17 @@ public class ReportAdminController {
         } catch (RuntimeException e) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage());
         }
+    }
+
+    /**
+     * Endpoint for retrieving report details by report ID.
+     *
+     * @param reportId the report ID
+     * @return a ResponseEntity containing the report details if found,
+     *         or an error message if the report is not found
+     */
+    @GetMapping("/{reportId}")
+    public ResponseEntity<UserReportDetails> getReportDetailsById(@PathVariable String reportId) {
+        return reportService.getReportDetailsById(reportId);
     }
 }
