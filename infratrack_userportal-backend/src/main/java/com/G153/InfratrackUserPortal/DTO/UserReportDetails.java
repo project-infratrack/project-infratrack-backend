@@ -12,6 +12,8 @@ public class UserReportDetails {
     private String image;
     private double latitude;
     private double longitude;
+    private String priorityLevel;
+    private String status;
     private int thumbsUp;
     private int thumbsDown;
 
@@ -157,6 +159,42 @@ public class UserReportDetails {
      */
     public void setLongitude(double longitude) {
         this.longitude = longitude;
+    }
+
+    /**
+     * Gets the priority level.
+     *
+     * @return the priority level
+     */
+    public String getPriorityLevel() {
+        return priorityLevel;
+    }
+
+    /**
+     * Sets the priority level.
+     *
+     * @param priorityLevel the priority level
+     */
+    public void setPriorityLevel(String priorityLevel) {
+        this.priorityLevel = priorityLevel;
+    }
+
+    /**
+     * Gets the status.
+     *
+     * @return the status
+     */
+    public String getStatus() {
+        return status;
+    }
+
+    /**
+     * Sets the status.
+     *
+     * @param status the status
+     */
+    public void setStatus(String status) {
+        this.status = status;
     }
 
     /**
