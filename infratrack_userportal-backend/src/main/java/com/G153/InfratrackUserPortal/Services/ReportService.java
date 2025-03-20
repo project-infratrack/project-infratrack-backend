@@ -154,6 +154,42 @@ public class ReportService {
     }
 
     /**
+     * Retrieves the details of a problem report by its ID.
+     *
+     * @param reportId the report ID
+     * @return a ResponseEntity containing the report details to history page if found,
+     *         or an error message if the report is not found
+     */
+    public ResponseEntity<UserReportDetails> getReportDetailsHistoryById(String reportId) {
+        Optional<ProblemReport> reportOptional = reportRepository.findById(reportId);
+        if (reportOptional.isPresent()) {
+            ProblemReport report = reportOptional.get();
+            UserReportDetails details = new UserReportDetails();
+            details.setId(report.getId());
+            details.setUserId(report.getUserId());
+            details.setReportType(report.getReportType());
+            details.setDescription(report.getDescription());
+            details.setLocation(report.getLocation());
+            details.setLatitude(report.getLatitude());
+            details.setLongitude(report.getLongitude());
+            details.setPriorityLevel(report.getPriorityLevel());
+            details.setStatus(report.getStatus());
+            details.setThumbsUp(report.getThumbsUp());
+            details.setThumbsDown(report.getThumbsDown());
+
+
+            if (report.getImage() != null) {
+                String base64Image = Base64.getEncoder().encodeToString(report.getImage());
+                details.setImage(base64Image);
+            }
+
+            return ResponseEntity.ok(details);
+        } else {
+            throw new RuntimeException("Report not found with ID: " + reportId);
+        }
+    }
+
+    /**
      * Retrieves problem reports by user NIC.
      *
      * @param userNIC the user NIC
