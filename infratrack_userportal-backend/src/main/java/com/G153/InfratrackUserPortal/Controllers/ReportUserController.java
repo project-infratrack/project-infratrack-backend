@@ -125,4 +125,9 @@ public class ReportUserController {
     public ResponseEntity<UserReportDetails> getReportDetailsById(@PathVariable String reportId) {
         return reportService.getReportDetailsById(reportId);
     }
+    @GetMapping("/updated-report/{reportId}")
+    public ResponseEntity<UserReportDetails> getUpdatedReportDetails(@PathVariable String reportId) {
+        return reportService.getReportHistoryDetailsById(reportId);
+
+    }
 }

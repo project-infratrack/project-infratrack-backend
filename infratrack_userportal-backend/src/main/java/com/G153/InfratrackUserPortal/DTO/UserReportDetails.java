@@ -14,6 +14,9 @@ public class UserReportDetails {
     private double longitude;
     private int thumbsUp;
     private int thumbsDown;
+    private String status; // Added status field
+    private String priorityLevel; // Added priorityLevel field
+
 
     /**
      * Gets the ID.
@@ -193,5 +196,40 @@ public class UserReportDetails {
      */
     public void setThumbsDown(int thumbsDown) {
         this.thumbsDown = thumbsDown;
+    }
+    /**
+     * Gets the status of the report.
+     *
+     * @return the status
+     */
+    public String getStatus() {
+        return status;
+    }
+
+    /**
+     * Sets the status of the report.
+     *
+     * @param status the status
+     */
+    public void setStatus(String status) {
+        this.status = status;
+    }
+
+    /**
+     * Gets the priority level of the report.
+     *
+     * @return the priority level
+     */
+    public String getPriorityLevel() {
+        return priorityLevel;
+    }
+
+    /**
+     * Sets the priority level of the report.
+     *
+     * @param priorityLevel the priority level
+     */
+    public void setPriorityLevel(String priorityLevel) {
+        this.priorityLevel = priorityLevel;
     }
 }

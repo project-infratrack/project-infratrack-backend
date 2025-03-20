@@ -158,4 +158,5 @@ public class ReportAdminController {
     public ResponseEntity<UserReportDetails> getReportDetailsById(@PathVariable String reportId) {
         return reportService.getReportDetailsById(reportId);
     }
+    
 }

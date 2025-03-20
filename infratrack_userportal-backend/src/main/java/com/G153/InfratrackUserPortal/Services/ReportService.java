@@ -278,9 +278,9 @@ public class ReportService {
     }
 
     /**
-     * Retrieves all mid priority problem reports.
+     * Retrieves all mid-priority problem reports.
      *
-     * @return a list of mid priority problem reports
+     * @return a list of mid-priority problem reports
      */
     public List<ProblemReport> getMidPriorityReports() {
         List<ProblemReport> reports = reportRepository.findByPriorityLevel("Mid Priority");
@@ -419,5 +419,41 @@ public class ReportService {
             return ResponseEntity.ok("Thumbs down removed!");
         }
         return ResponseEntity.badRequest().body("Report not found!");
+    }
+    /**
+     * Retrieves the details of a problem report by its ID.
+     *
+     * @param reportId the report ID
+     * @return a ResponseEntity containing the report details if found,
+     * or an error message if the report is not found
+     */
+    public ResponseEntity<UserReportDetails> getReportHistoryDetailsById(String reportId) {
+        Optional<ProblemReport> reportOptional = reportRepository.findById(reportId);
+        if (reportOptional.isPresent()) {
+            ProblemReport report = reportOptional.get();
+            UserReportDetails details = new UserReportDetails();
+            details.setId(report.getId());
+            details.setUserId(report.getUserId());
+            details.setReportType(report.getReportType());
+            details.setDescription(report.getDescription());
+            details.setLocation(report.getLocation());
+            details.setLatitude(report.getLatitude());
+            details.setLongitude(report.getLongitude());
+            details.setThumbsUp(report.getThumbsUp());
+            details.setThumbsDown(report.getThumbsDown());
+
+            if (report.getImage() != null) {
+                String base64Image = Base64.getEncoder().encodeToString(report.getImage());
+                details.setImage(base64Image);
+            }
+
+            // Add these two lines to set the status and priority level
+            details.setStatus(report.getStatus());
+            details.setPriorityLevel(report.getPriorityLevel());
+
+            return ResponseEntity.ok(details);
+        } else {
+            throw new RuntimeException("Report not found with ID: " + reportId);
+        }
     }
 }

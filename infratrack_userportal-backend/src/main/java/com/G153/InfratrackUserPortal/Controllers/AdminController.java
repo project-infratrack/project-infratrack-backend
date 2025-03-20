@@ -1,8 +1,10 @@
 package com.G153.InfratrackUserPortal.Controllers;
 
 import com.G153.InfratrackUserPortal.DTO.AdminLoginRequest;
+import com.G153.InfratrackUserPortal.DTO.UserReportDetails;
 import com.G153.InfratrackUserPortal.Entities.Admin;
 import com.G153.InfratrackUserPortal.Services.AdminService;
+import com.G153.InfratrackUserPortal.Services.ReportService;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import jakarta.validation.Valid;
@@ -45,4 +47,5 @@ public class AdminController {
     public ResponseEntity<String> register(@Valid @RequestBody Admin admin) {
         return adminService.registerAdmin(admin);
     }
+
 }
