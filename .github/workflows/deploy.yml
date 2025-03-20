@@ -23,7 +23,7 @@ jobs:
         uses: actions/upload-artifact@v4
         with:
           name: infratrack-backend
-          path: ${{github.workspace}}/target/*.jar
+          path: ${{ github.workspace }}/infratrack_userportal-backend/target/*.jar
 
   deploy:
     runs-on: ubuntu-latest
