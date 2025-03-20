@@ -20,7 +20,7 @@ jobs:
       - name: Build project
         run: mvn clean install -f infratrack_userportal-backend/pom.xml
       - name: Upload Artifact for deployment job
-        uses: actions/upload-artifact@v2
+        uses: actions/upload-artifact@v3
         with:
           name: infratrack-backend
           path: ${{github.workspace}}/target/*.jar
