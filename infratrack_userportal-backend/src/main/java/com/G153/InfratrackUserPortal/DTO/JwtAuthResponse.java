@@ -6,14 +6,18 @@ package com.G153.InfratrackUserPortal.DTO;
 public class JwtAuthResponse {
     private String token;
     private String type = "Bearer";
+    private String accessToken;
+
+
 
     /**
-     * Constructs a JwtAuthResponse with the specified token.
+     * Constructs a JwtAuthResponse with the specified access token.
      *
-     * @param token the JWT token
+     * @param accessToken the JWT access token
      */
-    public JwtAuthResponse(String token) {
-        this.token = token;
+    public JwtAuthResponse(String accessToken) {
+        this.accessToken = accessToken;
+        this.token = accessToken; // Optionally set token to the same value
     }
 
     /**
@@ -51,4 +55,12 @@ public class JwtAuthResponse {
     public void setType(String type) {
         this.type = type;
     }
+
+    public String getAccessToken() {
+        return accessToken;
+    }
+    public void setAccessToken(String accessToken) {
+        this.accessToken = accessToken;
+    }
+
 }
