@@ -12,8 +12,6 @@ public class Admin {
     private String id;
     private String adminNo;
     private String password;
-    private String email;
-    private String username;
 
 
 
