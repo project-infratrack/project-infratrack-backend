@@ -17,4 +17,7 @@ public interface AdminRepository extends MongoRepository<Admin, String> {
      * @return an Optional containing the Admin if found, or empty if not found
      */
     Optional<Admin> findByAdminNo(String adminNo);
+    boolean existsByUsername(String username);
+    boolean existsByEmail(String email);
+    Optional<Admin> findByUsername(String username);
 }
