@@ -92,4 +92,11 @@ public interface ProblemReportRepository extends MongoRepository<ProblemReport, 
      * @return a list of problem reports matching the priority level
      */
     List<ProblemReport> findByPriorityLevel(String priorityLevel);
+
+    /**
+     * Finds all problem reports in descending order by ID.
+     *
+     * @return a list of all problem reports in descending order by ID
+     */
+    List<ProblemReport> findAllByOrderByIdDesc();
 }
