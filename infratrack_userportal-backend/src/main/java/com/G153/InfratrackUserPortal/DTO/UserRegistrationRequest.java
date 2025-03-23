@@ -7,7 +7,7 @@ import jakarta.validation.constraints.*;
  */
 public class UserRegistrationRequest {
     @NotBlank(message = "ID number is required")
-    @Pattern(regexp = "^[0-9]{8}$", message = "ID number must be 8 digits")
+    @Pattern(regexp = "^[0-9]{8,12}$", message = "ID number must be 8 to 12digits")
     private String idNumber;
 
     @NotBlank(message = "First name is required")
@@ -76,7 +76,7 @@ public class UserRegistrationRequest {
      *
      * @return the ID number
      */
-    public @NotBlank(message = "ID number is required") @Pattern(regexp = "^[0-9]{8}$", message = "ID number must be 8 digits") String getIdNumber() {
+    public @NotBlank(message = "ID number is required") @Pattern(regexp = "^[0-9]{8,12}$", message = "ID number must be 8 to 12 digits") String getIdNumber() {
         return idNumber;
     }
 
@@ -85,7 +85,7 @@ public class UserRegistrationRequest {
      *
      * @param idNumber the ID number
      */
-    public void setIdNumber(@NotBlank(message = "ID number is required") @Pattern(regexp = "^[0-9]{8}$", message = "ID number must be 8 digits") String idNumber) {
+    public void setIdNumber(@NotBlank(message = "ID number is required") @Pattern(regexp = "^[0-9]{8,12}$", message = "ID number must be 8 to 12 digits") String idNumber) {
         this.idNumber = idNumber;
     }
 

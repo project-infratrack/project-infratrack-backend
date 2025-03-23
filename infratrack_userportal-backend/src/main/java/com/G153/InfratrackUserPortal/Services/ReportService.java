@@ -94,7 +94,7 @@ public class ReportService {
      * @return a list of user report details
      */
     public List<UserReportDetails> getAllReports() {
-        List<ProblemReport> reports = reportRepository.findAll();
+        List<ProblemReport> reports = reportRepository.findAllByOrderByIdDesc();
         return reports.stream()
                 .filter(report -> "Accepted".equals(report.getApproval()))
                 .map(report -> {

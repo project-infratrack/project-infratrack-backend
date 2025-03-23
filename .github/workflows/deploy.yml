@@ -1,4 +1,4 @@
-name: Deploy backend to Azure app service
+name: Deploy backend to Azure app service # re-merge
 
 on:
   push:
