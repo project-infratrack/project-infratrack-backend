@@ -70,7 +70,8 @@ class ReportServiceTest {
         ProblemReport report = new ProblemReport();
         report.setApproval("Accepted"); // Set the approval status to "Accepted"
         List<ProblemReport> reports = List.of(report);
-        when(reportRepository.findAll()).thenReturn(reports);
+
+        when(reportRepository.findAllByOrderByIdDesc()).thenReturn(reports); // FIXED!
 
         List<UserReportDetails> result = reportService.getAllReports();
 
@@ -78,6 +79,7 @@ class ReportServiceTest {
         assertEquals(1, result.size(), "Expected a list of size 1, but got: " + result.size());
         assertFalse(result.isEmpty());
     }
+
 
     @Test
     void testGetReportDetailsById() {
