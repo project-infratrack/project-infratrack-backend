@@ -19,8 +19,6 @@ public class AdminService {
     private final PasswordEncoder passwordEncoder;
     private final JwtTokenProvider jwtTokenProvider;
 
-
-
     /**
      * Constructor to initialize AdminService with required dependencies.
      *
@@ -43,7 +41,7 @@ public class AdminService {
      * @return a ResponseEntity containing the JWT token if authentication is successful,
      *         or an error message if authentication fails
      */
-      public ResponseEntity<?> loginAdmin(AdminLoginRequest request) {
+    public ResponseEntity<?> loginAdmin(AdminLoginRequest request) {
         Optional<Admin> adminOptional = adminRepository.findByAdminNo(request.getAdminNo());
         if (adminOptional.isPresent()) {
             Admin admin = adminOptional.get();
@@ -72,6 +70,4 @@ public class AdminService {
         adminRepository.save(admin);
         return ResponseEntity.ok("Admin registered successfully");
     }
-
-
 }
