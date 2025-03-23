@@ -7,7 +7,7 @@ import jakarta.validation.constraints.*;
  */
 public class UserRegistrationRequest {
     @NotBlank(message = "ID number is required")
-    @Pattern(regexp = "^{8}$", message = "ID number must be 8 digits")
+    @Pattern(regexp = "^[0-9]{8,12}$", message = "ID number must be 8 to 12digits")
     private String idNumber;
 
     @NotBlank(message = "First name is required")
@@ -27,7 +27,7 @@ public class UserRegistrationRequest {
     private String email;
 
     @NotBlank(message = "Password is required")
-    @Pattern(regexp = "^(?=.*)(?=.*[a-z])(?=.*[A-Z])(?=.*[@#$%^&+=])(?=\\S+$).{8,}$",
+    @Pattern(regexp = "^(?=.*[0-9])(?=.*[a-z])(?=.*[A-Z])(?=.*[@#$%^&+=])(?=\\S+$).{8,}$",
             message = "Password must be at least 8 characters long and contain at least one digit, one uppercase, one lowercase, and one special character")
     private String password;
 
@@ -40,7 +40,7 @@ public class UserRegistrationRequest {
      *
      * @return the email
      */
-    public String getEmail() {
+    public @NotBlank(message = "Email is required") @Email(message = "Invalid email format") String getEmail() {
         return email;
     }
 
@@ -49,7 +49,7 @@ public class UserRegistrationRequest {
      *
      * @param email the email
      */
-    public void setEmail(String email) {
+    public void setEmail(@NotBlank(message = "Email is required") @Email(message = "Invalid email format") String email) {
         this.email = email;
     }
 
@@ -58,7 +58,7 @@ public class UserRegistrationRequest {
      *
      * @return the first name
      */
-    public String getFirstName() {
+    public @NotBlank(message = "First name is required") @Size(min = 2, max = 50, message = "First name must be between 2 and 50 characters") String getFirstName() {
         return firstName;
     }
 
@@ -67,7 +67,7 @@ public class UserRegistrationRequest {
      *
      * @param firstName the first name
      */
-    public void setFirstName(String firstName) {
+    public void setFirstName(@NotBlank(message = "First name is required") @Size(min = 2, max = 50, message = "First name must be between 2 and 50 characters") String firstName) {
         this.firstName = firstName;
     }
 
@@ -76,7 +76,7 @@ public class UserRegistrationRequest {
      *
      * @return the ID number
      */
-    public String getIdNumber() {
+    public @NotBlank(message = "ID number is required") @Pattern(regexp = "^[0-9]{8,12}$", message = "ID number must be 8 to 12 digits") String getIdNumber() {
         return idNumber;
     }
 
@@ -85,7 +85,7 @@ public class UserRegistrationRequest {
      *
      * @param idNumber the ID number
      */
-    public void setIdNumber(String idNumber) {
+    public void setIdNumber(@NotBlank(message = "ID number is required") @Pattern(regexp = "^[0-9]{8,12}$", message = "ID number must be 8 to 12 digits") String idNumber) {
         this.idNumber = idNumber;
     }
 
@@ -94,7 +94,7 @@ public class UserRegistrationRequest {
      *
      * @return the last name
      */
-    public String getLastName() {
+    public @NotBlank(message = "Last name is required") @Size(min = 2, max = 50, message = "Last name must be between 2 and 50 characters") String getLastName() {
         return lastName;
     }
 
@@ -103,15 +103,17 @@ public class UserRegistrationRequest {
      *
      * @param lastName the last name
      */
-    public void setLastName(String lastName) {
+    public void setLastName(@NotBlank(message = "Last name is required") @Size(min = 2, max = 50, message = "Last name must be between 2 and 50 characters") String lastName) {
         this.lastName = lastName;
     }
 
-    public String getPassword() {
+    public @NotBlank(message = "Password is required") @Pattern(regexp = "^(?=.*[0-9])(?=.*[a-z])(?=.*[A-Z])(?=.*[@#$%^&+=])(?=\\S+$).{8,}$",
+            message = "Password must be at least 8 characters long and contain at least one digit, one uppercase, one lowercase, and one special character") String getPassword() {
         return password;
     }
 
-    public void setPassword(String password) {
+    public void setPassword(@NotBlank(message = "Password is required") @Pattern(regexp = "^(?=.*[0-9])(?=.*[a-z])(?=.*[A-Z])(?=.*[@#$%^&+=])(?=\\S+$).{8,}$",
+            message = "Password must be at least 8 characters long and contain at least one digit, one uppercase, one lowercase, and one special character") String password) {
         this.password = password;
     }
 
@@ -120,7 +122,7 @@ public class UserRegistrationRequest {
      *
      * @return the username
      */
-    public String getUsername() {
+    public @NotBlank(message = "Username is required") @Size(min = 4, max = 20, message = "Username must be between 4 and 20 characters") String getUsername() {
         return username;
     }
 
@@ -129,7 +131,7 @@ public class UserRegistrationRequest {
      *
      * @param username the username
      */
-    public void setUsername(String username) {
+    public void setUsername(@NotBlank(message = "Username is required") @Size(min = 4, max = 20, message = "Username must be between 4 and 20 characters") String username) {
         this.username = username;
     }
 
